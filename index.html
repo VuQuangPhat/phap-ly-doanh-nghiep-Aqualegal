@@ -3,7 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quản lý công việc pháp chế</title>
+<title>Aqua Legal | Quản lý công việc pháp chế</title>
+<meta name="author" content="Vũ Quang Phát">
+<meta name="copyright" content="© 2026 Vũ Quang Phát — Aqua Legal">
+<meta name="description" content="Aqua Legal – ứng dụng quản lý công việc pháp lý doanh nghiệp; tác giả Vũ Quang Phát.">
+<link rel="icon" type="image/svg+xml" href="assets/aqua-legal-icon.svg">
 <style>
 :root{--bg:#f6f5f2;--card:#fff;--ink:#1c2333;--mute:#667085;--line:#dcd9d2;--brand:#23395b;--seal:#a4262c;--ok:#2e6b4f;--warn:#b7791f;--r:6px}
 @media(prefers-color-scheme:dark){:root{--bg:#14171f;--card:#1c2029;--ink:#e8e9ee;--mute:#9aa1b2;--line:#323848;--brand:#8fb0e6;--seal:#ef7b80;--ok:#6fc29a;--warn:#e3b341}}
@@ -435,12 +439,41 @@ body.pv .mp{border-bottom:2px dashed #aab;margin-bottom:0}
 table.fm.m78{table-layout:fixed;font-size:8.5px;width:100%}table.fm.m78 th,table.fm.m78 td{padding:2px 3px;word-break:break-word;overflow-wrap:anywhere}
 .m78f{font-size:8.5px;line-height:1.3;margin-top:8px;border-top:1px solid #000;padding-top:3px;text-align:justify}
 @media print{#pvbar{display:none!important}body.pv #vprof{padding-top:0!important}html,body.pv{background:#fff!important}body.pv #plist{width:auto;min-width:0;max-width:none;margin:0;box-shadow:none;overflow:visible}body.pv .fpage,body.pv .fpage.land{padding:0;border:0}body.pv .mp{border:0}}
+
+/* Aqua Legal · Nhận diện thương hiệu và thông tin tác giả */
+.al-brand{display:flex;align-items:center;gap:18px;flex:1 1 420px;min-width:0}
+.al-brand picture{display:block;flex:0 0 auto}
+.al-brand img{display:block;width:234px;max-width:100%;height:auto;object-fit:contain}
+.al-brand-title{min-width:0}
+.al-brand-kicker{font-size:10px;font-weight:750;letter-spacing:.13em;color:var(--ok);margin-bottom:2px}
+.al-brand-title h1{font-size:18px;line-height:1.25}
+.al-gate-logo{display:block;width:min(280px,85vw);height:auto;margin:0 auto 17px}
+#sig.al-copyright{padding:20px 14px 32px;text-align:center;border-top:1px solid var(--line)}
+.al-author{display:flex;align-items:center;justify-content:center;gap:14px;max-width:530px;margin:0 auto}
+.al-author-logo{display:block;width:188px;max-width:42%;height:auto;flex:0 0 auto}
+.al-author-info{display:flex;flex-direction:column;text-align:left;gap:3px;line-height:1.3}
+.al-author-info .al-author-kicker{color:var(--ok);font-size:11px;font-weight:700;letter-spacing:.09em}
+#sig .al-author-info strong{font-size:17px;line-height:1.25;color:var(--ink)}
+.al-author-info .al-author-role{font-size:12px;color:var(--mute)}
+#sig .al-copyright-note{margin:14px auto 0;color:var(--mute);font-size:11px;line-height:1.5}
+@media(max-width:700px){.al-brand{gap:10px;flex-wrap:wrap}.al-brand img{width:205px}.al-brand-title h1{font-size:16px}}
+@media(max-width:460px){.al-brand{flex-direction:column;align-items:flex-start;gap:7px}.al-brand img{width:220px}.al-author{gap:8px}.al-author-logo{width:140px}.al-author-info .al-author-kicker{font-size:9px}#sig .al-author-info strong{font-size:14px}.al-author-info .al-author-role{font-size:10px}}
+@media print{#sig.al-copyright{display:none!important}}
 </style>
 </head>
 <body>
-<div id="gate" style="position:fixed;inset:0;z-index:2147483000;background:#0f1b2d;color:#fff;display:flex;align-items:center;justify-content:center;padding:16px;font-family:system-ui,sans-serif"><div style="max-width:420px;text-align:center"><div style="font-size:20px;font-weight:700;margin-bottom:8px">Quản lý công việc pháp chế</div><p id="gate_msg" style="margin:0 0 16px;font-size:14px;opacity:.85">Cần đăng nhập Google để xem nội dung. Chỉ tài khoản đã được cấp quyền mới vào được.</p><button id="gate_go" style="padding:10px 18px;font-size:15px;border:0;border-radius:8px;background:#fff;color:#0f1b2d;cursor:pointer;font-weight:600">Đăng nhập Google</button><div style="margin-top:14px"><a href="#" id="gate_cfg" style="color:#9fc1ff;font-size:12px">Quản trị: cấu hình lần đầu</a></div></div></div>
+<div id="gate" style="position:fixed;inset:0;z-index:2147483000;background:#0f1b2d;color:#fff;display:flex;align-items:center;justify-content:center;padding:16px;font-family:system-ui,sans-serif"><div style="max-width:420px;text-align:center"><img class="al-gate-logo" src="assets/aqua-legal-logo-dark.svg" alt="Aqua Legal — Vũ Quang Phát" width="280" height="83"><div style="font-size:20px;font-weight:700;margin-bottom:8px">Quản lý công việc pháp chế</div><p id="gate_msg" style="margin:0 0 16px;font-size:14px;opacity:.85">Cần đăng nhập Google để xem nội dung. Chỉ tài khoản đã được cấp quyền mới vào được.</p><button id="gate_go" style="padding:10px 18px;font-size:15px;border:0;border-radius:8px;background:#fff;color:#0f1b2d;cursor:pointer;font-weight:600">Đăng nhập Google</button><div style="margin-top:14px"><a href="#" id="gate_cfg" style="color:#9fc1ff;font-size:12px">Quản trị: cấu hình lần đầu</a></div></div></div>
 <header>
-  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><h1>Quản lý công việc pháp chế<small id="bakinfo"></small><small id="ghst"></small></h1>
+  <div class="al-brand">
+    <picture>
+      <source srcset="assets/aqua-legal-logo-dark.svg" media="(prefers-color-scheme: dark)">
+      <img src="assets/aqua-legal-logo-light.svg" width="234" height="70" alt="Logo Aqua Legal — Vũ Quang Phát" decoding="async">
+    </picture>
+    <div class="al-brand-title">
+      <div class="al-brand-kicker">PHÁP LÝ DOANH NGHIỆP</div>
+      <h1>Quản lý công việc pháp chế<small id="bakinfo"></small><small id="ghst"></small></h1>
+    </div>
+  </div>
   <button id="teamw" title="Nhân sự phòng - bấm để chọn"><span class="tw-n" id="twn">01</span><span class="tw-l"><b>Nhân sự phòng</b><small id="twm"></small></span></button></div>
   <div class="bar">
     <button class="primary" id="add">Thêm công việc</button>
@@ -581,7 +614,20 @@ table.fm.m78{table-layout:fixed;font-size:8.5px;width:100%}table.fm.m78 th,table
   <div class="foot"><button id="kcancel">Đóng</button><button class="primary" id="ksave">Lưu</button></div>
 </dialog>
 
-<footer id="sig">Website được xây dựng và biên soạn bởi <b>Vũ Quang Phát</b> · Pháp lý &amp; Phát triển dự án BĐS</footer>
+<footer id="sig" class="al-copyright" aria-label="Thông tin tác giả và bản quyền Aqua Legal">
+  <div class="al-author">
+    <picture class="al-author-logo">
+      <source srcset="assets/aqua-legal-logo-dark.svg" media="(prefers-color-scheme: dark)">
+      <img src="assets/aqua-legal-logo-light.svg" width="188" height="56" alt="Thương hiệu Aqua Legal" loading="lazy" style="display:block;width:100%;height:auto">
+    </picture>
+    <div class="al-author-info">
+      <span class="al-author-kicker">TÁC GIẢ · AQUA LEGAL</span>
+      <strong>Vũ Quang Phát</strong>
+      <span class="al-author-role">Pháp lý &amp; phát triển dự án BĐS</span>
+    </div>
+  </div>
+  <p class="al-copyright-note">© 2026 Vũ Quang Phát · Aqua Legal. Bản quyền thuộc về tác giả.</p>
+</footer>
 
 <dialog id="pdlg" style="width:min(760px,95vw)">
   <h2>Chỉnh kế hoạch công việc</h2>
