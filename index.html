@@ -1345,69 +1345,7 @@ twRender();setInterval(twRender,3000);
 
 $("rxls").onclick=()=>{
   const css="table{border-collapse:collapse}td,th{text-align:center;border:.5pt solid #000;vertical-align:middle;mso-number-format:'\\@'}th{background:#2f4a73;color:#ffffff}tr.sec td{background:#f1f1ec;font-weight:bold;text-align:center}.rh{text-align:center}td.rs1{background:#dfe8f5;color:#1f3358;font-weight:bold}td.rs2{background:#d9eeee;color:#1d5558;font-weight:bold}td.rs3{background:#f8e9cc;color:#7a5412;font-weight:bold}td.rs4{background:#dcefe2;color:#256040;font-weight:bold}td.rgI{background:#dfe8f5;color:#1f3358;font-weight:bold}td.rgII{background:#dcefe2;color:#256040;font-weight:bold}td.rgIII{background:#f8e9cc;color:#7a5412;font-weight:bold}td.rgIV{background:#f6dcdc;color:#8f2430;font-weight:bold}td.rgV{background:#d9eeee;color:#1d5558;font-weight:bold}td.rc0{background:#e4ebf5}td.rc1{background:#dcefef}td.rc2{background:#e3f0e7}td.rc3{background:#f6ecd8}td.rc4{background:#ece5f3}td.rc5{background:#f4e1e3}td.rok{color:#256040;font-weight:bold}td.rwip{color:#8a5a0c;font-weight:bold}td.rbad{color:#a4262c;font-weight:bold}";
-  dl(($("rbody").dataset.name||"bao_cao")+".xls","application/vnd.ms-excel",`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"><style>${css}</style></head><body>${$("rbody").innerHTML}<script>
-/* Đồng hồ, âm lịch UTC+7, thành ngữ trong MASTER BRAIN */
-(() => {
-  'use strict';
-  const TZ='Asia/Ho_Chi_Minh', UTC7=7;
-  const can=['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý'];
-  const chi=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
-  const sayings=[
-    'Nói có sách, mách có chứng.', 'Cẩn tắc vô áy náy.',
-    'Dục tốc bất đạt.', 'Có công mài sắt, có ngày nên kim.',
-    'Đi một ngày đàng, học một sàng khôn.', 'Đói cho sạch, rách cho thơm.',
-    'Giấy trắng mực đen.', 'Nước chảy đá mòn.',
-    'Trăm nghe không bằng một thấy.', 'Uống nước nhớ nguồn.',
-    'Ăn ngay nói thật.', 'Học ăn, học nói, học gói, học mở.',
-    'Muốn biết phải hỏi, muốn giỏi phải học.', 'Lời nói gói vàng.',
-    'Tốt gỗ hơn tốt nước sơn.', 'Tiên học lễ, hậu học văn.',
-    'Ăn quả nhớ kẻ trồng cây.', 'Chậm mà chắc.',
-    'Chữ tín quý hơn vàng.', 'Phòng bệnh hơn chữa bệnh.',
-    'Việc hôm nay chớ để ngày mai.', 'Biết người biết ta, trăm trận trăm thắng.',
-    'Học thầy không tày học bạn.', 'Ở hiền gặp lành.',
-    'Khôn ngoan chẳng lọ thật thà.', 'Thương người như thể thương thân.',
-    'Không thầy đố mày làm nên.', 'Có chí thì nên.',
-    'Một cây làm chẳng nên non, ba cây chụm lại nên hòn núi cao.',
-    'Lá lành đùm lá rách.', 'Thất bại là mẹ thành công.'
-  ];
-  // Thuật toán âm lịch Việt Nam (múi giờ UTC+7), dùng chu kỳ sóc và tiết khí.
-  const floor=Math.floor, PI=Math.PI, sin=Math.sin;
-  function jd(d,m,y){let a=floor((14-m)/12);y+=4800-a;m+=12*a-3;let j=d+floor((153*m+2)/5)+365*y+floor(y/4)-floor(y/100)+floor(y/400)-32045;if(j<2299161)j=d+floor((153*m+2)/5)+365*y+floor(y/4)-32083;return j;}
-  function newMoon(k){let T=k/1236.85,T2=T*T,T3=T2*T,dr=PI/180;
-    let J=2415020.75933+29.53058868*k+.0001178*T2-.000000155*T3+.00033*sin((166.56+132.87*T-.009173*T2)*dr);
-    let M=359.2242+29.10535608*k-.0000333*T2-.00000347*T3;
-    let Mp=306.0253+385.81691806*k+.0107306*T2+.00001236*T3;
-    let F=21.2964+390.67050646*k-.0016528*T2-.00000239*T3;
-    let C=(.1734-.000393*T)*sin(M*dr)+.0021*sin(2*M*dr)-.4068*sin(Mp*dr)+.0161*sin(2*Mp*dr)-.0004*sin(3*Mp*dr)+.0104*sin(2*F*dr)-.0051*sin((M+Mp)*dr)-.0074*sin((M-Mp)*dr)+.0004*sin((2*F+M)*dr)-.0004*sin((2*F-M)*dr)-.0006*sin((2*F+Mp)*dr)+.0010*sin((2*F-Mp)*dr)+.0005*sin((2*Mp+M)*dr);
-    let delta=T< -11?.001+.000839*T+.0002261*T2-.00000845*T3-.000000081*T*T3:-.000278+.000265*T+.000262*T2;
-    return J+C-delta;
-  }
-  function newMoonDay(k){return floor(newMoon(k)+.5+UTC7/24);}
-  function sunLongitude(j){let T=(j-2451545)/36525,T2=T*T,dr=PI/180,M=357.52910+35999.05030*T-.0001559*T2-.00000048*T*T2,L0=280.46645+36000.76983*T+.0003032*T2,DL=(1.914600-.004817*T-.000014*T2)*sin(dr*M)+(.019993-.000101*T)*sin(dr*2*M)+.000290*sin(dr*3*M),L=(L0+DL)*dr;return L-2*PI*floor(L/(2*PI));}
-  function sunSector(day){return floor(sunLongitude(day-.5-UTC7/24)/PI*6);}
-  function month11(y){let off=jd(31,12,y)-2415021,k=floor(off/29.530588853),nm=newMoonDay(k);return sunSector(nm)>=9?newMoonDay(k-1):nm;}
-  function leapOffset(a11){let k=floor(.5+(a11-2415021.076998695)/29.530588853),last=0,i=1,arc=sunSector(newMoonDay(k+i));do{last=arc;i++;arc=sunSector(newMoonDay(k+i));}while(arc!==last&&i<14);return i-1;}
-  function solarToLunar(d,m,y){let day=jd(d,m,y),k=floor((day-2415021.076998695)/29.530588853),start=newMoonDay(k+1);if(start>day)start=newMoonDay(k);let a11=month11(y),b11=a11,ly;if(a11>=start){ly=y;a11=month11(y-1);}else{ly=y+1;b11=month11(y+1);}let ld=day-start+1,diff=floor((start-a11)/29),lm=diff+11,leap=false;if(b11-a11>365){let offset=leapOffset(a11);if(diff>=offset){lm=diff+10;leap=diff===offset;}}if(lm>12)lm-=12;if(lm>=11&&diff<4)ly--;return {day:ld,month:lm,year:ly,leap};}
-  const partsFormat=new Intl.DateTimeFormat('en-GB',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
-  const weekdayFormat=new Intl.DateTimeFormat('vi-VN',{timeZone:TZ,weekday:'long'});
-  const solarEl=document.getElementById('al-solar'),lunarEl=document.getElementById('al-lunar'),sayingEl=document.getElementById('al-proverb');
-  let lastDate='', lunarBase='';
-  function update(){const now=new Date(),p=Object.fromEntries(partsFormat.formatToParts(now).filter(x=>x.type!=='literal').map(x=>[x.type,Number(x.value)]));
-    const d=p.day,m=p.month,y=p.year,h=p.hour,stamp=`${y}-${m}-${d}`;
-    solarEl.textContent=`${weekdayFormat.format(now)}, ${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}/${y} · ${String(h).padStart(2,'0')}:${String(p.minute).padStart(2,'0')}:${String(p.second).padStart(2,'0')}`;
-    if(stamp!==lastDate){lastDate=stamp;
-      const l=solarToLunar(d,m,y),yearName=can[(l.year+6)%10]+' '+chi[(l.year+8)%12];
-      lunarBase=`${String(l.day).padStart(2,'0')}/${String(l.month).padStart(2,'0')}/${l.year}${l.leap?' (nhuận)':''} · ${yearName}`;
-      const dayNo=floor(Date.UTC(y,m-1,d)/86400000);
-      sayingEl.textContent='❝ '+sayings[((dayNo%sayings.length)+sayings.length)%sayings.length]+' ❞';
-    }
-    lunarEl.textContent=lunarBase+' · Giờ '+chi[floor(((h+1)%24)/2)];
-  }
-  update();setInterval(()=>{update();},1000);
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)update();});
-})();
-</script>
-</body></html>`);
+  dl(($("rbody").dataset.name||"bao_cao")+".xls","application/vnd.ms-excel",`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"><style>${css}</style></head><body>${$("rbody").innerHTML}</body></html>`);
 };
 render();
 
@@ -6379,5 +6317,68 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 })();
 
 </script>
+<script>
+/* Đồng hồ, âm lịch UTC+7, thành ngữ trong MASTER BRAIN */
+(() => {
+  'use strict';
+  const TZ='Asia/Ho_Chi_Minh', UTC7=7;
+  const can=['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý'];
+  const chi=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+  const sayings=[
+    'Nói có sách, mách có chứng.', 'Cẩn tắc vô áy náy.',
+    'Dục tốc bất đạt.', 'Có công mài sắt, có ngày nên kim.',
+    'Đi một ngày đàng, học một sàng khôn.', 'Đói cho sạch, rách cho thơm.',
+    'Giấy trắng mực đen.', 'Nước chảy đá mòn.',
+    'Trăm nghe không bằng một thấy.', 'Uống nước nhớ nguồn.',
+    'Ăn ngay nói thật.', 'Học ăn, học nói, học gói, học mở.',
+    'Muốn biết phải hỏi, muốn giỏi phải học.', 'Lời nói gói vàng.',
+    'Tốt gỗ hơn tốt nước sơn.', 'Tiên học lễ, hậu học văn.',
+    'Ăn quả nhớ kẻ trồng cây.', 'Chậm mà chắc.',
+    'Chữ tín quý hơn vàng.', 'Phòng bệnh hơn chữa bệnh.',
+    'Việc hôm nay chớ để ngày mai.', 'Biết người biết ta, trăm trận trăm thắng.',
+    'Học thầy không tày học bạn.', 'Ở hiền gặp lành.',
+    'Khôn ngoan chẳng lọ thật thà.', 'Thương người như thể thương thân.',
+    'Không thầy đố mày làm nên.', 'Có chí thì nên.',
+    'Một cây làm chẳng nên non, ba cây chụm lại nên hòn núi cao.',
+    'Lá lành đùm lá rách.', 'Thất bại là mẹ thành công.'
+  ];
+  // Thuật toán âm lịch Việt Nam (múi giờ UTC+7), dùng chu kỳ sóc và tiết khí.
+  const floor=Math.floor, PI=Math.PI, sin=Math.sin;
+  function jd(d,m,y){let a=floor((14-m)/12);y+=4800-a;m+=12*a-3;let j=d+floor((153*m+2)/5)+365*y+floor(y/4)-floor(y/100)+floor(y/400)-32045;if(j<2299161)j=d+floor((153*m+2)/5)+365*y+floor(y/4)-32083;return j;}
+  function newMoon(k){let T=k/1236.85,T2=T*T,T3=T2*T,dr=PI/180;
+    let J=2415020.75933+29.53058868*k+.0001178*T2-.000000155*T3+.00033*sin((166.56+132.87*T-.009173*T2)*dr);
+    let M=359.2242+29.10535608*k-.0000333*T2-.00000347*T3;
+    let Mp=306.0253+385.81691806*k+.0107306*T2+.00001236*T3;
+    let F=21.2964+390.67050646*k-.0016528*T2-.00000239*T3;
+    let C=(.1734-.000393*T)*sin(M*dr)+.0021*sin(2*M*dr)-.4068*sin(Mp*dr)+.0161*sin(2*Mp*dr)-.0004*sin(3*Mp*dr)+.0104*sin(2*F*dr)-.0051*sin((M+Mp)*dr)-.0074*sin((M-Mp)*dr)+.0004*sin((2*F+M)*dr)-.0004*sin((2*F-M)*dr)-.0006*sin((2*F+Mp)*dr)+.0010*sin((2*F-Mp)*dr)+.0005*sin((2*Mp+M)*dr);
+    let delta=T< -11?.001+.000839*T+.0002261*T2-.00000845*T3-.000000081*T*T3:-.000278+.000265*T+.000262*T2;
+    return J+C-delta;
+  }
+  function newMoonDay(k){return floor(newMoon(k)+.5+UTC7/24);}
+  function sunLongitude(j){let T=(j-2451545)/36525,T2=T*T,dr=PI/180,M=357.52910+35999.05030*T-.0001559*T2-.00000048*T*T2,L0=280.46645+36000.76983*T+.0003032*T2,DL=(1.914600-.004817*T-.000014*T2)*sin(dr*M)+(.019993-.000101*T)*sin(dr*2*M)+.000290*sin(dr*3*M),L=(L0+DL)*dr;return L-2*PI*floor(L/(2*PI));}
+  function sunSector(day){return floor(sunLongitude(day-.5-UTC7/24)/PI*6);}
+  function month11(y){let off=jd(31,12,y)-2415021,k=floor(off/29.530588853),nm=newMoonDay(k);return sunSector(nm)>=9?newMoonDay(k-1):nm;}
+  function leapOffset(a11){let k=floor(.5+(a11-2415021.076998695)/29.530588853),last=0,i=1,arc=sunSector(newMoonDay(k+i));do{last=arc;i++;arc=sunSector(newMoonDay(k+i));}while(arc!==last&&i<14);return i-1;}
+  function solarToLunar(d,m,y){let day=jd(d,m,y),k=floor((day-2415021.076998695)/29.530588853),start=newMoonDay(k+1);if(start>day)start=newMoonDay(k);let a11=month11(y),b11=a11,ly;if(a11>=start){ly=y;a11=month11(y-1);}else{ly=y+1;b11=month11(y+1);}let ld=day-start+1,diff=floor((start-a11)/29),lm=diff+11,leap=false;if(b11-a11>365){let offset=leapOffset(a11);if(diff>=offset){lm=diff+10;leap=diff===offset;}}if(lm>12)lm-=12;if(lm>=11&&diff<4)ly--;return {day:ld,month:lm,year:ly,leap};}
+  const partsFormat=new Intl.DateTimeFormat('en-GB',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+  const weekdayFormat=new Intl.DateTimeFormat('vi-VN',{timeZone:TZ,weekday:'long'});
+  const solarEl=document.getElementById('al-solar'),lunarEl=document.getElementById('al-lunar'),sayingEl=document.getElementById('al-proverb');
+  let lastDate='', lunarBase='';
+  function update(){const now=new Date(),p=Object.fromEntries(partsFormat.formatToParts(now).filter(x=>x.type!=='literal').map(x=>[x.type,Number(x.value)]));
+    const d=p.day,m=p.month,y=p.year,h=p.hour,stamp=`${y}-${m}-${d}`;
+    solarEl.textContent=`${weekdayFormat.format(now)}, ${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}/${y} · ${String(h).padStart(2,'0')}:${String(p.minute).padStart(2,'0')}:${String(p.second).padStart(2,'0')}`;
+    if(stamp!==lastDate){lastDate=stamp;
+      const l=solarToLunar(d,m,y),yearName=can[(l.year+6)%10]+' '+chi[(l.year+8)%12];
+      lunarBase=`${String(l.day).padStart(2,'0')}/${String(l.month).padStart(2,'0')}/${l.year}${l.leap?' (nhuận)':''} · ${yearName}`;
+      const dayNo=floor(Date.UTC(y,m-1,d)/86400000);
+      sayingEl.textContent='❝ '+sayings[((dayNo%sayings.length)+sayings.length)%sayings.length]+' ❞';
+    }
+    lunarEl.textContent=lunarBase+' · Giờ '+chi[floor(((h+1)%24)/2)];
+  }
+  update();setInterval(()=>{update();},1000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)update();});
+})();
+</script>
+
 </body>
 </html>
