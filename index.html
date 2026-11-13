@@ -822,7 +822,7 @@ body>nav.tabs button:focus-visible{outline-offset:-3px}
 </dialog>
 
 <script>
-const DEF={org:"TÊN TỔ CHỨC CỦA BẠN",unit:"Pháp chế",g1:["Công ty mẹ"],g2:["Công ty con A","Công ty con B"],g3:["Công ty liên kết"],proj:["Dự án 1"]};
+const DEF={org:"CÔNG TY CỔ PHẦN ĐẦU TƯ VÍ DỤ",unit:"Pháp chế",g1:["VDG"],g2:["VDX","VDB"],g3:["VDS"],proj:["Khu dân cư Ví Dụ 1","Cụm công nghiệp Ví Dụ"]};
 const TYPES=["Pháp lý doanh nghiệp","Pháp lý đầu tư","Pháp lý thương mại","Pháp lý lao động","Khác"],BASE=TYPES.slice(0,4);
 const TMAP={"Review hợp đồng":"Pháp lý thương mại","Rà soát pháp lý":"Pháp lý doanh nghiệp","Thủ tục hành chính":"Pháp lý doanh nghiệp"};
 const ST=["Mới","Đang xử lý","Chờ phản hồi","Tạm dừng","Hoàn thành"],DOC=["Chưa lập hồ sơ","Đang trình duyệt","Đã duyệt","Đã thu/chi xong"],VOU=["Có chứng từ","Không có chứng từ","Chờ bổ sung chứng từ"];
@@ -841,7 +841,94 @@ function listsSeed(){if(!CFG.prof)CFG.prof={};const q=Array.isArray(CFG.prof.dm)
   const have=new Set(q.map(r=>r&&r.nhom)),miss=Object.keys(LISTS_DEF).filter(n=>!have.has(n));if(miss.length)q.push(...listsRows(miss));return miss.length}
 regList("TYPES",TYPES);regList("ST",ST);regList("DOC",DOC);regList("VOU",VOU);
 const KEY="mau_tasks_v1",KB="mau_budget_v1",KC="mau_cfg_v1";
-const $=id=>document.getElementById(id);
+/* ===== Chế độ DEMO: dữ liệu hư cấu, không nối Google Sheet/GitHub, không đăng nhập; dữ liệu chỉ nằm trên máy người xem ===== */
+(function(){try{
+  const P="mau_",L=localStorage,D=n=>{const z=new Date(Date.now()+n*864e5);return new Date(z.getTime()-z.getTimezoneOffset()*6e4).toISOString().slice(0,10)},
+    F=n=>D(n).split("-").reverse().join("/"),M=n=>D(n).slice(0,7);
+  ["sh_v1","sh_tok2","sh_mail","gh_v1","gh_dirty"].forEach(k=>{L.removeItem(P+k);try{sessionStorage.removeItem(P+k)}catch(e){}});
+  const R=(id,ky,han,loai,pn,dv,mt,cs,nh,nhom)=>({id:"DEMO-"+id,ky,han,loai,phap_nhan:pn,dau_viec:dv,mo_ta:mt,cspl:cs,nhan:nh,nhom,nguoi_pt:"",trang_thai:""});
+  window.__LN_DEMO=[
+   R("01","2026-12","Trong tháng 12/2026","int","Tất cả","Đóng việc tồn năm 2026","Hoàn tất sổ đăng ký cổ đông, phụ lục điều lệ và các hồ sơ đang dở.","","nội bộ","A"),
+   R("02","2026-12","Cuối tháng 12","int","Tất cả","Chốt sổ đăng ký cổ đông cuối năm","Khóa số liệu làm đầu vào cho ĐHĐCĐ 2027; in sổ và ký xác nhận.","Điều 122 Luật Doanh nghiệp 2020","quy định rõ","A"),
+   R("03","2027-01","Trong tháng 1","int","Tất cả","Chốt kế hoạch pháp chế năm 2027","Rà soát hợp đồng còn hiệu lực và mốc hết hạn; chốt lịch ĐHĐCĐ và HĐQT từng công ty.","","nội bộ","A"),
+   R("04","2027-02","Tháng 1–3","int","Tất cả","Chuẩn bị tài liệu họp ĐHĐCĐ thường niên","Báo cáo HĐQT, báo cáo của Ban kiểm soát, phương án phân phối lợi nhuận, thù lao.","Điều 139 Luật Doanh nghiệp 2020","quy định rõ","A"),
+   R("05","2027-02","Quý 1","int","Tất cả","Đánh giá hợp đồng nội bộ giữa các pháp nhân","Kiểm tra chấp thuận giao dịch với người có liên quan; đối chiếu Điều lệ từng công ty.","Điều 167 Luật Doanh nghiệp 2020","quy định rõ","A"),
+   R("06","2027-04","Sau họp HĐQT quý","int","VDG","Báo cáo HĐQT quý I","Kết quả quý I và kế hoạch quý II.","","nội bộ","A"),
+   R("07","2027-05","Sau ĐHĐCĐ","int","Tất cả","Cập nhật sổ cổ đông, Điều lệ, người đại diện","Gắn nghị quyết ĐHĐCĐ vào hồ sơ; phát hành phụ lục Điều lệ nếu có sửa đổi.","Điều 122 Luật Doanh nghiệp 2020","quy định rõ","A"),
+   R("08","2027-06","Quý 2","int","Tất cả","Gia hạn giấy phép và giấy chứng nhận sắp hết hạn","Theo bảng theo dõi mốc hết hạn.","","nội bộ","A"),
+   R("09","2027-09","Quý 3–4","int","VDS","Kiểm tra PCCC, an toàn lao động, nội quy lao động","Theo chuyên ngành của đơn vị sản xuất.","","nội bộ","A"),
+   R("10","2027-11","Tháng 11–12","int","Tất cả","Rà soát hồ sơ pháp lý, chuẩn bị lưu trữ cuối năm","Rà hợp đồng hết hạn và gia hạn cho năm sau; hồ sơ phục vụ kiểm toán.","","nội bộ","A"),
+   R("B1","","Theo từng sự kiện","int","Tất cả","Thay đổi vốn, cổ đông","Lập hồ sơ biên bản và cập nhật sổ cổ đông khi chuyển nhượng, tăng vốn, thoái vốn.","Điều 122 Luật Doanh nghiệp 2020","quy định rõ","B"),
+   R("B2","","Theo từng vụ","int","Tất cả","Tranh chấp","Công văn, thương lượng, khởi kiện; theo dõi thời hiệu.","","nội bộ","B"),
+   R("C1","","Quanh năm","int","Phòng pháp chế","Review hợp đồng và theo dõi mốc hết hạn","Mỗi hợp đồng một dòng trong bảng theo dõi.","","nội bộ","C")
+  ];
+  if(L.getItem(P+"demo_seed"))return;
+  let n=0;const T=(title,co,type,pri,st,recv,due,note,proj)=>({id:"demo"+(++n),title,co,type,pri,st,recv:D(recv),due:due==null?"":D(due),note:note||"",proj:proj||""});
+  const tasks=[
+   T("Soạn Nghị quyết ĐHĐCĐ thường niên 2026","VDG","Pháp lý doanh nghiệp","1","Đang xử lý",-20,10,"Chốt ngày họp, gửi thông báo mời họp trước 21 ngày."),
+   T("Rà soát Điều lệ sau lần tăng vốn gần nhất","VDG","Pháp lý doanh nghiệp","1","Mới",-3,25,"Đối chiếu vốn điều lệ trên GCN và Điều lệ hiện hành."),
+   T("Đăng ký thay đổi người đại diện theo pháp luật","VDX","Pháp lý doanh nghiệp","1","Chờ phản hồi",-15,-2,"Đã nộp hồ sơ tại cơ quan đăng ký, chờ kết quả."),
+   T("Lập sổ đăng ký cổ đông","VDB","Pháp lý doanh nghiệp","2","Đang xử lý",-12,14,"Thu thập danh sách và giấy tờ cổ đông."),
+   T("Báo cáo giao dịch với bên liên quan Quý 4","VDG","Pháp lý doanh nghiệp","2","Mới",-1,30,"Tổng hợp giao dịch giữa công ty mẹ và công ty con."),
+   T("Review hợp đồng thi công gói thầu số 3","VDX","Pháp lý thương mại","1","Đang xử lý",-6,3,"Soát điều khoản phạt vi phạm, bảo lãnh thực hiện hợp đồng.","Khu dân cư Ví Dụ 1"),
+   T("Công văn nhắc nhà thầu hoàn thành hạng mục","VDX","Pháp lý thương mại","2","Chờ phản hồi",-9,5,"Gửi lần 2, nêu mốc chấm dứt hợp đồng nếu không khắc phục.","Khu dân cư Ví Dụ 1"),
+   T("Hợp đồng thuê nhà xưởng với đối tác nước ngoài","VDS","Pháp lý thương mại","1","Đang xử lý",-18,7,"Đàm phán điều khoản gia hạn và điều chỉnh giá thuê.","Cụm công nghiệp Ví Dụ"),
+   T("Soạn phụ lục sửa đổi hợp đồng vay","VDG","Pháp lý thương mại","2","Mới",-2,12,"Điều chỉnh lãi suất, kỳ hạn trả nợ."),
+   T("Thủ tục chấp thuận chủ trương đầu tư dự án","VDB","Pháp lý đầu tư","1","Đang xử lý",-30,20,"Chuẩn bị hồ sơ đề xuất, báo cáo thẩm tra.","Khu dân cư Ví Dụ 1"),
+   T("Điều chỉnh tiến độ dự án cụm công nghiệp","VDS","Pháp lý đầu tư","1","Chờ phản hồi",-25,-5,"Hồ sơ đã nộp, chờ ý kiến sở chuyên ngành.","Cụm công nghiệp Ví Dụ"),
+   T("Hoàn thiện hồ sơ giao đất, thuê đất","VDB","Pháp lý đầu tư","2","Đang xử lý",-14,18,"Bổ sung bản đồ địa chính và biên bản bàn giao.","Khu dân cư Ví Dụ 1"),
+   T("Thẩm định phương án góp vốn vào công ty liên kết","VDG","Pháp lý đầu tư","2","Mới",-4,35,"Kiểm tra thẩm quyền phê duyệt và điều kiện chuyển nhượng."),
+   T("Rà soát nội quy lao động","VDS","Pháp lý lao động","2","Đang xử lý",-10,15,"Cập nhật theo quy định mới về thời giờ làm việc."),
+   T("Chấm dứt hợp đồng lao động với quản lý cấp trung","VDX","Pháp lý lao động","1","Chờ phản hồi",-8,2,"Kiểm tra căn cứ chấm dứt và thời hạn báo trước."),
+   T("Soát hợp đồng lao động cho nhân sự nước ngoài","VDS","Pháp lý lao động","3","Mới",-1,40,"Giấy phép lao động và thời hạn cư trú."),
+   T("Gia hạn nhãn hiệu của tập đoàn","VDG","Khác","3","Đang xử lý",-22,60,"Nộp đơn gia hạn trước hạn bảo hộ."),
+   T("Trả lời yêu cầu cung cấp thông tin của cơ quan thuế","VDB","Khác","1","Hoàn thành",-28,-20,"Đã gửi văn bản giải trình đúng hạn."),
+   T("Lưu trữ hồ sơ pháp lý dự án quý 3","VDX","Khác","3","Hoàn thành",-40,-30,"Đã scan và đặt tên theo chuẩn."),
+   T("Công bố thông tin định kỳ","VDG","Pháp lý doanh nghiệp","2","Hoàn thành",-35,-25,"Đã đăng cổng thông tin đúng hạn."),
+   T("Soạn quyết định bổ nhiệm Giám đốc điều hành","VDS","Pháp lý doanh nghiệp","2","Tạm dừng",-16,null,"Chờ chốt nhân sự.")
+  ];
+  let b=0;const B=(kind,period,title,co,amount,date,voucher,party,proj)=>({id:"demob"+(++b),kind,period,title,co,amount,date:F(date),voucher:voucher||"",party:party||"",proj:proj||"",note:""});
+  const budget=[
+   B("Tạm ứng",M(-20),"Tạm ứng chi phí pháp chế tháng này","VDG",30000000,-20),
+   B("Chi",M(-18),"Lệ phí đăng ký thay đổi người đại diện","VDX",2000000,-18,"Có chứng từ","Cơ quan đăng ký"),
+   B("Chi",M(-12),"Phí công chứng hợp đồng","VDB",3500000,-12,"Có chứng từ","Văn phòng công chứng"),
+   B("Chi",M(-9),"Dịch thuật hợp đồng thuê nhà xưởng","VDS",4800000,-9,"Chờ bổ sung chứng từ","Công ty dịch thuật"),
+   B("Chi",M(-5),"Phí thẩm định hồ sơ đầu tư","VDB",12000000,-5,"Có chứng từ","Đơn vị tư vấn","Khu dân cư Ví Dụ 1"),
+   B("Chi",M(-3),"Chi phí đi lại làm việc với sở chuyên ngành","VDS",1500000,-3,"Không có chứng từ","","Cụm công nghiệp Ví Dụ"),
+   B("Tạm ứng",M(-35),"Tạm ứng chi phí pháp chế tháng trước","VDG",25000000,-35),
+   B("Chi",M(-33),"Phí đăng ký nhãn hiệu","VDG",9000000,-33,"Có chứng từ","Cục Sở hữu trí tuệ"),
+   B("Hoàn ứng",M(-31),"Hoàn trả phần tạm ứng dư","VDG",6000000,-31)
+  ];
+  const co=(code,name,msdn,vdl,vtg,addr)=>({code,name,msdn,lan:"3",ngay:D(-400),vdl,vtg,menhgia:"10000",addr,dia:"TP.HCM",dk:"Đã đăng ký",note:""});
+  const prof={
+   co:[co("VDG","CÔNG TY CỔ PHẦN ĐẦU TƯ VÍ DỤ","0300000001",500000000000,500000000000,"Số 1, đường Mẫu, Quận 1, TP.HCM"),
+       co("VDX","CÔNG TY CỔ PHẦN XÂY DỰNG VÍ DỤ","0300000002",200000000000,200000000000,"Số 2, đường Mẫu, Quận 3, TP.HCM"),
+       co("VDB","CÔNG TY CỔ PHẦN BẤT ĐỘNG SẢN VÍ DỤ","0300000003",300000000000,300000000000,"Số 3, đường Mẫu, Quận 7, TP.HCM"),
+       co("VDS","CÔNG TY CỔ PHẦN SẢN XUẤT VÍ DỤ","0300000004",150000000000,150000000000,"Lô A1, khu công nghiệp Mẫu, tỉnh Đồng Nai")],
+   ppl:[{name:"Nguyễn Văn A",gt:"Nam",qt:"Việt Nam",note:""},{name:"Trần Thị B",gt:"Nữ",qt:"Việt Nam",note:""},{name:"Lê Văn C",gt:"Nam",qt:"Việt Nam",note:""},{name:"Phạm Thị D",gt:"Nữ",qt:"Việt Nam",note:""}],
+   pos:[{name:"Nguyễn Văn A",co:"VDG",role:"NĐDPL",title:"Chủ tịch HĐQT",from:D(-900),to:"",dk:"Đã đăng ký"},
+        {name:"Nguyễn Văn A",co:"VDG",role:"Chủ tịch HĐQT",title:"Chủ tịch HĐQT",from:D(-900),to:"",dk:"Đã đăng ký"},
+        {name:"Trần Thị B",co:"VDS",role:"NĐDPL",title:"Giám đốc",from:D(-600),to:"",dk:"Đã đăng ký"},
+        {name:"Trần Thị B",co:"VDG",role:"Tổng giám đốc",title:"Tổng giám đốc",from:D(-700),to:"",dk:"Đã đăng ký"},
+        {name:"Lê Văn C",co:"VDX",role:"NĐDPL",title:"Giám đốc",from:D(-200),to:"",dk:"Chưa đăng ký"},
+        {name:"Phạm Thị D",co:"VDB",role:"NĐDPL",title:"Giám đốc",from:D(-500),to:"",dk:"Đã đăng ký"}],
+   own:[{co:"VDG",holder:"Nguyễn Văn A",shares:30000000,asof:D(-200)},{co:"VDG",holder:"Trần Thị B",shares:20000000,asof:D(-200)},
+        {co:"VDX",holder:"CTCP Đầu tư Ví Dụ",lk:"VDG",shares:20000000,asof:D(-200)},{co:"VDB",holder:"CTCP Đầu tư Ví Dụ",lk:"VDG",shares:30000000,asof:D(-200)},
+        {co:"VDS",holder:"CTCP Đầu tư Ví Dụ",lk:"VDG",shares:9000000,asof:D(-200)},{co:"VDS",holder:"Nguyễn Văn A",shares:6000000,asof:D(-200)}],
+   prj:[{name:"Khu dân cư Ví Dụ 1",code:"KDC1",co:"VDB",owner:"CTCP Bất động sản Ví Dụ",nddpl:"Phạm Thị D",addr:"Huyện Mẫu, tỉnh Đồng Nai",dt:120000,tvdt:850000000000,dk:"Chưa đăng ký",note:"Đang chờ chấp thuận chủ trương đầu tư."},
+        {name:"Cụm công nghiệp Ví Dụ",code:"CCN1",co:"VDS",owner:"CTCP Sản xuất Ví Dụ",nddpl:"Lê Văn C",addr:"Thị xã Mẫu, tỉnh Bình Dương",dt:350000,tvdt:1200000000000,dk:"Đã đăng ký",note:"Đã điều chỉnh tiến độ lần 1."}]
+  };
+  L.setItem(P+"tasks_v1",JSON.stringify(tasks));L.setItem(P+"budget_v1",JSON.stringify(budget));L.setItem(P+"cfg_v1",JSON.stringify({prof}));L.setItem(P+"demo_seed","1");
+}catch(e){}})();
+(function(){const go=()=>{
+  const st=document.createElement("style");st.textContent="#gate{display:none!important}#shb,#shout{display:none!important}.demo-bar{position:sticky;top:0;z-index:2147482000;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;padding:6px 12px;background:#fff4d6;color:#5a4300;font:13px system-ui,sans-serif;border-bottom:1px solid #e6cf8a}.demo-bar button{font:inherit;padding:3px 10px;border:1px solid #c9a94a;border-radius:6px;background:#fff;color:#5a4300;cursor:pointer}";
+  document.head.appendChild(st);
+  const bar=document.createElement("div");bar.className="demo-bar";
+  bar.innerHTML="<b>Bản dùng thử.</b><span>Dữ liệu là hư cấu, chỉ lưu trên máy bạn, không gửi đi đâu. Bạn có thể thêm, sửa, xóa thoải mái.</span><button id=\"demo_reset\">Đặt lại dữ liệu mẫu</button>";
+  document.body.prepend(bar);
+  document.getElementById("demo_reset").onclick=()=>{const b=document.getElementById("demo_reset");if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Bấm lần nữa để xóa và nạp lại";setTimeout(()=>{b.dataset.sure="";b.textContent="Đặt lại dữ liệu mẫu"},4000);return}
+    try{Object.keys(localStorage).filter(k=>k.indexOf("mau_")===0).forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()};
+};if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go()})();const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const br=s=>String(s).startsWith("\u0001")?String(s).slice(1):esc(s).replace(/\n/g,"<br>");
 const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)};
@@ -2377,9 +2464,7 @@ const PD=()=>{const p=CFG.prof=CFG.prof||{};
 function seedProf(p){
   const up=(name,o,over)=>{let r=p.ppl.find(x=>norm(x.name)===norm(name));if(!r){r={id:uid(),name,cccd:"",cccdngay:"",cccdnoi:"",addr:"",note:""};p.ppl.push(r)}
     Object.keys(o).forEach(k=>{if(over||r[k]===undefined||r[k]===""||r[k]==null)r[k]=o[k]});return r};
-  up("Vũ Quang Phát",{gt:"Nam",qt:"Việt Nam",dt:"Kinh"},false);
-  p.me="Vũ Quang Phát";
-  up("Lê Việt Tùng",{gt:"Nam",dt:"Kinh",qt:"Việt Nam"},false);
+
   
 }
 function ensurePersons(){const d=PD();d.pos.forEach(p=>{if(p.name&&!d.ppl.some(x=>same(x.name,p.name)))d.ppl.push({id:uid(),name:p.name,cccd:"",cccdngay:"",cccdnoi:"",addr:"",note:""})})}
@@ -4524,7 +4609,7 @@ function rCt(r,all){
   const tbl=r.length?`<table class="m"><thead><tr><th>STT</th><th>Doanh nghiệp</th><th>Hợp đồng</th><th>Loại</th><th>Giá trị (đồng)</th><th>Ngày nhận / hạn review</th><th>Tình trạng</th><th>Rủi ro</th><th>Hết hạn</th></tr></thead><tbody>${[...r].sort((a,b)=>(done(a)-done(b))||String(a.hen||"9").localeCompare(String(b.hen||"9"))).map((h,i)=>`<tr data-id="${h.id}"><td class="num">${i+1}</td><td>${chip(h.co)}</td><td class="t">${esc(h.ten)}${h.party?`<small>${esc(h.party)}${h.proj?" | "+esc(h.proj):""}${(()=>{const I=ctInfo(h);return I.isRel?` <span class="wn1" title="${esc(I.rel.join("; ")||"Đánh dấu thủ công")}">Bên liên quan</span>`+(/HĐQT|ĐHĐCĐ/.test(h.tq||"")&&!/^Đang/.test(h.tq||"")?` <span style="color:var(--ok)">${esc(h.tq.replace("Đã có nghị quyết / quyết định ","đã có NQ ").replace("Đã có nghị quyết ","đã có NQ "))}</span>`:""):""})()}</small>`:""}${h.note?`<small class="s">${esc(String(h.note).slice(0,120))}</small>`:""}</td><td>${esc(h.loai||"")}</td><td class="num">${h.gt!==""&&h.gt!=null?money(h.gt):""}</td><td>${h.ngay?fmt(h.ngay):""}${h.hen?` <small class="s">hạn ${fmt(h.hen)}</small>`:""}${h.kq?`<small class="s">trả ${fmt(h.kq)}</small>`:""}</td><td>${stT(h)}</td><td>${rrT(h)}</td><td>${hhT(h)}</td></tr>`).join("")}</tbody></table>`:`<div class="empty" style="margin:8px 0">Chưa có hợp đồng nào. Bấm "Thêm hợp đồng" hoặc "Nhập CSV".</div>`;
   $("plist").innerHTML=gp+`<h3 class="hsh">Tổng hợp theo doanh nghiệp</h3><table class="m"><thead><tr><th>Doanh nghiệp</th><th>Tổng HĐ</th><th>Chờ / đang review</th><th>Đã trả ý kiến</th><th>Rủi ro cao</th><th>Sắp hết hạn</th><th>Tổng giá trị (đồng)</th></tr></thead><tbody>${sumRows}</tbody></table><h3 class="hsh">Danh sách hợp đồng</h3>${tbl}`;
 }
-const meName=()=>PD().me||"Vũ Quang Phát";
+const meName=()=>PD().me||"Người lập";
 function rMe(){
   const d=PD(),nm=meName(),p=d.ppl.find(x=>pn(x.name)===pn(nm))||{name:nm};
   const row=(l,v)=>`<tr><td style="width:30%;color:var(--mute)">${l}</td><td>${v?esc(v):'<span class="bad">Chưa có</span>'}</td></tr>`;
@@ -6290,7 +6375,7 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 })();
 
 
-/* ===== Thẩm quyền ký theo Luật Doanh nghiệp: đọc từ tab prof_tq của Sheet (CFG.prof.tq); chỉ xem, sửa nội dung ở Sheet ===== */
+/* ===== Thẩm quyền ký theo Luật Doanh nghiệp: nội dung luật định tích hợp sẵn (TQ_DEF), không phụ thuộc Sheet ===== */
 (function(){
 function boot(){
 const tptc=document.getElementById("tptc");
@@ -6304,7 +6389,9 @@ const TYPES=[
   {k:"nt",lab:"Nguyên tắc và phạm vi",lh:null}
 ];
 const NH_GT="Giấy tờ, quyết định",NH_LQ="Giao dịch với người có liên quan";
-const TQ=()=>(((typeof CFG!=="undefined"&&CFG.prof)||{}).tq||[]).filter(r=>r&&r.giay_to&&!/hết hiệu lực|ngưng|tắt/i.test(String(r.trang_thai||"")));
+/* Nội dung luật định, tích hợp sẵn: không đọc từ Sheet. Đã đối chiếu bản hợp nhất Luật DN 67/VBHN-VPQH; dòng "Chưa XM" là chỗ chưa xác minh. */
+const TQ_DEF=[{"id":"tq001","loai_hinh":"Chung","nhom":"Nguyên tắc chung","stt":"1","giay_to":"Người ký đại diện","nguoi_ky":"Người đại diện theo pháp luật (NĐDPL) thực hiện quyền, nghĩa vụ phát sinh từ giao dịch của doanh nghiệp. Điều lệ quy định số lượng, chức danh và quyền của NĐDPL.","can_cu":"Điều 12 khoản 1, 2 Luật DN","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq002","loai_hinh":"Chung","nhom":"Nguyên tắc chung","stt":"2","giay_to":"Nhiều NĐDPL","nguoi_ky":"Nếu Điều lệ chưa phân chia quyền, mỗi NĐDPL đều là đại diện đủ thẩm quyền trước bên thứ ba; các NĐDPL liên đới chịu trách nhiệm về thiệt hại.","can_cu":"Điều 12 khoản 2 Luật DN","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq003","loai_hinh":"Chung","nhom":"Nguyên tắc chung","stt":"3","giay_to":"Ngưỡng tỷ lệ","nguoi_ky":"Tính trên tổng giá trị tài sản ghi trong báo cáo tài chính gần nhất. Điều lệ có thể quy định tỷ lệ khác ở hầu hết các ngưỡng; luôn đối chiếu Điều lệ hiện hành của từng công ty trước khi ký.","can_cu":"Điều 55.2d, 138.2d, 153.2h, 167.2 Luật DN","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq004","loai_hinh":"Chung","nhom":"Nguyên tắc chung","stt":"4","giay_to":"Ủy quyền","nguoi_ky":"NĐDPL xuất cảnh mà là người duy nhất cư trú tại Việt Nam phải ủy quyền bằng văn bản cho cá nhân khác cư trú tại Việt Nam và vẫn chịu trách nhiệm. Chủ tịch HĐQT vắng mặt ủy quyền bằng văn bản cho thành viên khác. Luật DN không quy định chi tiết việc ủy quyền ký hợp đồng thông thường: theo Điều lệ, quy chế nội bộ và Bộ luật Dân sự.","can_cu":"Điều 12 khoản 3; Điều 156 khoản 4 Luật DN","nhan":"Rõ; Chưa XM (Bộ luật Dân sự)","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq005","loai_hinh":"Chung","nhom":"Nguyên tắc chung","stt":"5","giay_to":"Dấu","nguoi_ky":"Doanh nghiệp tự quyết định loại, số lượng, hình thức dấu (kể cả dấu dưới hình thức chữ ký số); quản lý, lưu giữ theo Điều lệ hoặc quy chế.","can_cu":"Điều 43 Luật DN","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq006","loai_hinh":"Chung","nhom":"Phạm vi xác minh","stt":"1","giay_to":"Đã đối chiếu nguyên văn","nguoi_ky":"Bản hợp nhất Luật DN 67/VBHN-VPQH (Công báo số 1105+1106 ngày 31-8-2025, đã gồm sửa đổi bởi Luật 76/2025/QH15 hiệu lực từ 01/7/2025): các Điều 12, 31, 43, 47, 55-56, 59-61, 63, 67-68, 79-82, 84-86, 121, 135, 138, 148-150, 152-153, 156, 158, 162-163, 167, 208.","can_cu":"VBHN 67/VBHN-VPQH (2025)","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq007","loai_hinh":"Chung","nhom":"Phạm vi xác minh","stt":"2","giay_to":"Chưa kiểm tra","nguoi_ky":"Việc Luật DN có được sửa đổi hoặc hợp nhất mới sau ngày 31-8-2025 hay không; cần tra lại Công báo, CSDL văn bản pháp luật trước khi dùng cho hồ sơ chính thức.","can_cu":"","nhan":"Chưa XM","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq008","loai_hinh":"Chung","nhom":"Phạm vi xác minh","stt":"3","giay_to":"Chưa xem","nguoi_ky":"Điều lệ và quy chế nội bộ của từng công ty (có thể thay đổi hầu hết ngưỡng và người ký ghi trong bảng).","can_cu":"","nhan":"Chưa XM","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq009","loai_hinh":"Chung","nhom":"Phạm vi xác minh","stt":"4","giay_to":"Ngoài Luật DN, chưa đọc","nguoi_ky":"Luật Kế toán (ký chứng từ, báo cáo tài chính); Bộ luật Lao động (ký hợp đồng lao động); Bộ luật Dân sự (ủy quyền, hậu quả giao dịch vượt thẩm quyền đại diện ở các giao dịch ngoài Điều 167, 67, 86); Luật Chứng khoán (công ty đại chúng); luật đầu tư, đất đai, nhà ở; nghị định về đăng ký doanh nghiệp (mẫu hồ sơ).","can_cu":"","nhan":"Chưa XM","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq010","loai_hinh":"Chung","nhom":"Phạm vi xác minh","stt":"5","giay_to":"Chưa đưa vào bảng","nguoi_ky":"Doanh nghiệp nhà nước, công ty hợp danh, doanh nghiệp tư nhân; Điều 87 (tăng, giảm vốn TNHH một thành viên); Điều 164 (công khai lợi ích liên quan); Điều 133 (mua lại cổ phần).","can_cu":"","nhan":"Chưa XM","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq011","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"1","giay_to":"Hợp đồng thương mại hằng ngày","nguoi_ky":"Giám đốc/Tổng giám đốc quyết định công việc kinh doanh hằng ngày; NĐDPL ký đại diện công ty","can_cu":"Điều 12.1; 162.3a","nhan":"Rõ (việc hằng ngày); Suy ra (người ký)","trang_thai":"hiệu lực","dieu_kien":"Dưới ngưỡng 35% và không thuộc thẩm quyền HĐQT/ĐHĐCĐ. Luật không ghi riêng Giám đốc công ty cổ phần \"ký hợp đồng\": người ký cụ thể theo Điều lệ hoặc ủy quyền."},{"id":"tq012","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"2","giay_to":"Hợp đồng mua, bán, vay, cho vay và giao dịch khác","nguoi_ky":"HĐQT thông qua","can_cu":"Điều 153.2h","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Giá trị từ 35% tổng tài sản trở lên, trừ khi Điều lệ có tỷ lệ khác; trừ giao dịch thuộc ĐHĐCĐ."},{"id":"tq013","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"3","giay_to":"Quyết định đầu tư hoặc bán tài sản lớn","nguoi_ky":"ĐHĐCĐ quyết định; thông qua khi cổ đông đại diện từ 65% tổng số phiếu biểu quyết của cổ đông dự họp và biểu quyết tán thành (tỷ lệ cụ thể theo Điều lệ)","can_cu":"Điều 138.2d; 148.1d","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Giá trị từ 35% tổng tài sản trở lên, trừ khi Điều lệ quy định tỷ lệ hoặc giá trị khác."},{"id":"tq014","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"4","giay_to":"Phương án, dự án đầu tư trong thẩm quyền","nguoi_ky":"HĐQT quyết định; Giám đốc/Tổng giám đốc tổ chức thực hiện","can_cu":"Điều 153.2e; 162.3c","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Trong thẩm quyền và giới hạn theo quy định của pháp luật."},{"id":"tq015","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"5","giay_to":"Nghị quyết HĐQT","nguoi_ky":"Thông qua bằng biểu quyết tại cuộc họp hoặc lấy ý kiến bằng văn bản; biên bản họp có chữ ký chủ tọa và người ghi biên bản; Chủ tịch HĐQT là chủ tọa","can_cu":"Điều 153.3; 156.3b; 158","nhan":"Rõ (biên bản); Suy ra (nghị quyết)","trang_thai":"hiệu lực","dieu_kien":"Ai ký văn bản nghị quyết: Luật không nêu, theo Điều lệ."},{"id":"tq016","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"6","giay_to":"Nghị quyết ĐHĐCĐ","nguoi_ky":"Biên bản họp: chủ tọa và thư ký ký; chủ tọa là Chủ tịch HĐQT. Lấy ý kiến bằng văn bản: phiếu lấy ý kiến và biên bản kiểm phiếu có chữ ký Chủ tịch HĐQT","can_cu":"Điều 150.1-2; 149; 156.3đ","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Nếu chủ tọa hoặc thư ký từ chối ký, biên bản vẫn có hiệu lực khi tất cả thành viên HĐQT khác dự họp ký và đủ nội dung."},{"id":"tq017","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"7","giay_to":"Bổ nhiệm, miễn nhiệm Giám đốc/Tổng giám đốc; ký và chấm dứt hợp đồng với Giám đốc; lương thưởng","nguoi_ky":"HĐQT quyết định","can_cu":"Điều 153.2i; 162.1-2; 163.2c","nhan":"Rõ; Suy ra (người ký hợp đồng)","trang_thai":"hiệu lực","dieu_kien":"Nhiệm kỳ Giám đốc/Tổng giám đốc không quá 05 năm. Ai thay mặt công ty ký hợp đồng lao động với Giám đốc: theo nghị quyết HĐQT hoặc Điều lệ."},{"id":"tq018","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"8","giay_to":"Tuyển dụng; lương người lao động; bổ nhiệm chức danh quản lý không thuộc HĐQT","nguoi_ky":"Giám đốc/Tổng giám đốc","can_cu":"Điều 162.3đ, e, g","nhan":"Rõ; Chưa XM (Bộ luật Lao động)","trang_thai":"hiệu lực","dieu_kien":"Chức danh thuộc thẩm quyền HĐQT thì HĐQT bổ nhiệm. Hình thức ký hợp đồng lao động theo Bộ luật Lao động."},{"id":"tq019","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"9","giay_to":"Thành lập công ty con, chi nhánh, văn phòng đại diện; góp vốn, mua cổ phần doanh nghiệp khác; cơ cấu tổ chức, quy chế nội bộ","nguoi_ky":"HĐQT quyết định; Giám đốc/Tổng giám đốc kiến nghị cơ cấu, quy chế","can_cu":"Điều 153.2l; 162.3d","nhan":"Rõ; Suy ra (ngưỡng góp vốn)","trang_thai":"hiệu lực","dieu_kien":"Góp vốn, mua cổ phần đạt 35% tổng tài sản trở lên: nên xét thêm thẩm quyền ĐHĐCĐ về đầu tư lớn (suy ra)."},{"id":"tq020","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"10","giay_to":"Chào bán cổ phần, giá bán cổ phần và trái phiếu, mua lại cổ phần","nguoi_ky":"ĐHĐCĐ: loại và tổng số cổ phần được quyền chào bán; mua lại trên 10% số cổ phần đã bán của mỗi loại. HĐQT: bán cổ phần chưa bán trong phạm vi được quyền chào bán, quyết định giá, mua lại theo khoản 1, 2 Điều 133","can_cu":"Điều 138.2b, g; 153.2c, d, đ","nhan":"Rõ; Chưa XM (luật chuyên ngành)","trang_thai":"hiệu lực","dieu_kien":"Chào bán chứng khoán, trái phiếu: pháp luật chuyên ngành điều chỉnh thêm."},{"id":"tq021","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"11","giay_to":"Cổ phiếu","nguoi_ky":"NĐDPL ký","can_cu":"Điều 121.1đ","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Nội dung cổ phiếu có chữ ký của NĐDPL."},{"id":"tq022","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"12","giay_to":"Cổ tức","nguoi_ky":"ĐHĐCĐ quyết định mức cổ tức hằng năm; HĐQT kiến nghị và quyết định thời hạn, thủ tục trả; thông báo trả cổ tức có chữ ký Chủ tịch HĐQT và NĐDPL","can_cu":"Điều 138.2b; 153.2o; 135.4","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"HĐQT lập danh sách cổ đông nhận cổ tức chậm nhất 30 ngày trước mỗi lần trả."},{"id":"tq023","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"13","giay_to":"Sửa đổi Điều lệ","nguoi_ky":"ĐHĐCĐ quyết định","can_cu":"Điều 138.2đ; 148.2","nhan":"Rõ; Suy ra (tỷ lệ mặc định)","trang_thai":"hiệu lực","dieu_kien":"Thông qua theo tỷ lệ Điều lệ; mặc định trên 50% số phiếu của cổ đông dự họp (Điều 148.2), trừ khi Điều lệ quy định khác."},{"id":"tq024","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"14","giay_to":"Báo cáo tài chính hằng năm","nguoi_ky":"HĐQT trình; ĐHĐCĐ thông qua","can_cu":"Điều 153.2n; 138.2e","nhan":"Rõ; Chưa XM (Luật Kế toán)","trang_thai":"hiệu lực","dieu_kien":"Ký báo cáo tài chính, chứng từ kế toán: theo Luật Kế toán."},{"id":"tq025","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"15","giay_to":"Tổ chức lại, giải thể","nguoi_ky":"ĐHĐCĐ quyết định; HĐQT kiến nghị; nghị quyết, quyết định giải thể có chữ ký Chủ tịch HĐQT","can_cu":"Điều 138.2i; 153.2p; 148.1đ; 208.1đ","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Tỷ lệ thông qua thuộc nhóm Điều 148.1 (65% số phiếu của cổ đông dự họp, theo Điều lệ)."},{"id":"tq026","loai_hinh":"Công ty cổ phần","nhom":"Giấy tờ, quyết định","stt":"16","giay_to":"Thông báo thay đổi nội dung đăng ký doanh nghiệp (ví dụ thay đổi cổ đông là nhà đầu tư nước ngoài)","nguoi_ky":"NĐDPL ký thông báo","can_cu":"Điều 31","nhan":"Rõ; Chưa XM (mẫu hồ sơ theo nghị định đăng ký doanh nghiệp)","trang_thai":"hiệu lực","dieu_kien":"Nội dung thông báo có họ tên, chữ ký NĐDPL."},{"id":"tq027","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giấy tờ, quyết định","stt":"1","giay_to":"Hợp đồng thường ngày","nguoi_ky":"Giám đốc/Tổng giám đốc ký hợp đồng nhân danh công ty, trừ trường hợp thuộc thẩm quyền Chủ tịch HĐTV","can_cu":"Điều 63.2b, e; 12.1","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Không thuộc nhóm phải qua HĐTV; NĐDPL cũng đại diện công ty trong giao dịch."},{"id":"tq028","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giấy tờ, quyết định","stt":"2","giay_to":"Hợp đồng vay, cho vay, bán tài sản và hợp đồng khác do Điều lệ quy định","nguoi_ky":"HĐTV thông qua","can_cu":"Điều 55.2d; 59.3","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Giá trị từ 50% tổng tài sản trở lên (BCTC gần nhất), hoặc tỷ lệ, giá trị nhỏ hơn do Điều lệ quy định. Thông qua tại họp: từ 65% vốn góp của thành viên dự họp; nghị quyết bán tài sản từ 50% tổng tài sản: từ 75%."},{"id":"tq029","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giấy tờ, quyết định","stt":"3","giay_to":"Dự án đầu tư phát triển; chiến lược, kế hoạch kinh doanh","nguoi_ky":"HĐTV quyết định","can_cu":"Điều 55.2a, c; 63.2c","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Giám đốc/Tổng giám đốc tổ chức thực hiện kế hoạch kinh doanh và phương án đầu tư."},{"id":"tq030","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giấy tờ, quyết định","stt":"4","giay_to":"Nghị quyết, quyết định của HĐTV","nguoi_ky":"Chủ tịch HĐTV thay mặt HĐTV ký nghị quyết, quyết định. Biên bản họp: chủ tọa và người ghi biên bản ký. Lấy ý kiến bằng văn bản: phiếu lấy ý kiến và biên bản kiểm phiếu có chữ ký Chủ tịch HĐTV","can_cu":"Điều 56.2đ; 60.2g, 3; 61","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Nếu chủ tọa hoặc người ghi biên bản từ chối ký, biên bản vẫn có hiệu lực khi các thành viên dự họp và đồng ý thông qua biên bản ký và đủ nội dung."},{"id":"tq031","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giấy tờ, quyết định","stt":"5","giay_to":"Bổ nhiệm, miễn nhiệm Giám đốc/Tổng giám đốc, Kế toán trưởng; ký và chấm dứt hợp đồng với nhóm này; lương, thưởng","nguoi_ky":"HĐTV quyết định; mặc định phải biểu quyết tại cuộc họp đối với bổ nhiệm, miễn nhiệm Giám đốc/Tổng giám đốc","can_cu":"Điều 55.2đ, e; 59.2c","nhan":"Rõ; Suy ra (người ký hợp đồng)","trang_thai":"hiệu lực","dieu_kien":"Người thay mặt công ty ký hợp đồng lao động với Giám đốc theo nghị quyết HĐTV hoặc Điều lệ."},{"id":"tq032","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giấy tờ, quyết định","stt":"6","giay_to":"Tuyển dụng lao động; bổ nhiệm người quản lý không thuộc HĐTV","nguoi_ky":"Giám đốc/Tổng giám đốc","can_cu":"Điều 63.2đ, k","nhan":"Rõ; Chưa XM (Bộ luật Lao động)","trang_thai":"hiệu lực","dieu_kien":"Hình thức ký hợp đồng lao động theo Bộ luật Lao động."},{"id":"tq033","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giấy tờ, quyết định","stt":"7","giay_to":"Thành lập công ty con, chi nhánh, văn phòng đại diện; cơ cấu tổ chức quản lý","nguoi_ky":"HĐTV quyết định; Giám đốc/Tổng giám đốc kiến nghị cơ cấu","can_cu":"Điều 55.2h, i; 63.2g","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq034","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giấy tờ, quyết định","stt":"8","giay_to":"Tăng, giảm vốn điều lệ; phát hành trái phiếu","nguoi_ky":"HĐTV quyết định; NĐDPL ký thông báo tăng, giảm vốn gửi cơ quan đăng ký kinh doanh","can_cu":"Điều 55.2b; 68.4-5","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Thông báo trong 10 ngày kể từ ngày việc tăng, giảm vốn đã thanh toán xong; kèm nghị quyết, quyết định và biên bản họp HĐTV."},{"id":"tq035","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giấy tờ, quyết định","stt":"9","giay_to":"Sửa đổi Điều lệ; tổ chức lại; giải thể","nguoi_ky":"HĐTV quyết định; nghị quyết, quyết định giải thể có chữ ký Chủ tịch HĐTV","can_cu":"Điều 55.2k, l, m; 59.2, 59.3b; 208.1đ","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Mặc định phải biểu quyết tại cuộc họp; thông qua khi thành viên dự họp sở hữu từ 75% vốn góp của thành viên dự họp (trừ khi Điều lệ quy định tỷ lệ khác)."},{"id":"tq036","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giấy tờ, quyết định","stt":"10","giay_to":"Báo cáo tài chính; phân chia lợi nhuận, xử lý lỗ","nguoi_ky":"HĐTV thông qua; Giám đốc/Tổng giám đốc trình báo cáo tài chính và kiến nghị phương án","can_cu":"Điều 55.2g; 63.2h, i; 69","nhan":"Rõ; Chưa XM (Luật Kế toán)","trang_thai":"hiệu lực","dieu_kien":"Chỉ chia lợi nhuận sau khi hoàn thành nghĩa vụ thuế và tài chính. Ký báo cáo tài chính, chứng từ kế toán: theo Luật Kế toán."},{"id":"tq037","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giấy tờ, quyết định","stt":"11","giay_to":"Giấy chứng nhận phần vốn góp","nguoi_ky":"NĐDPL ký","can_cu":"Điều 47.6e","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Nội dung giấy chứng nhận gồm họ tên, chữ ký NĐDPL."},{"id":"tq038","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giấy tờ, quyết định","stt":"12","giay_to":"Thông báo thay đổi nội dung đăng ký doanh nghiệp","nguoi_ky":"NĐDPL ký","can_cu":"Điều 31","nhan":"Rõ; Chưa XM (mẫu hồ sơ)","trang_thai":"hiệu lực","dieu_kien":"Mẫu hồ sơ cụ thể theo nghị định về đăng ký doanh nghiệp."},{"id":"tq039","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giấy tờ, quyết định","stt":"1","giay_to":"Mô hình quản trị và NĐDPL","nguoi_ky":"Một trong hai mô hình: (a) Chủ tịch công ty + Giám đốc/Tổng giám đốc; (b) HĐTV + Giám đốc/Tổng giám đốc","can_cu":"Điều 79.1, 79.3","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"NĐDPL giữ một trong các chức danh Chủ tịch HĐTV, Chủ tịch công ty hoặc Giám đốc/Tổng giám đốc; nếu Điều lệ không quy định thì Chủ tịch HĐTV hoặc Chủ tịch công ty là NĐDPL."},{"id":"tq040","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giấy tờ, quyết định","stt":"2","giay_to":"Hợp đồng thường ngày","nguoi_ky":"Giám đốc/Tổng giám đốc ký hợp đồng nhân danh công ty, trừ trường hợp thuộc thẩm quyền Chủ tịch HĐTV hoặc Chủ tịch công ty","can_cu":"Điều 82.2b, e; 12.1","nhan":"Rõ; Suy ra (không có ngưỡng)","trang_thai":"hiệu lực","dieu_kien":"Luật DN không đặt ngưỡng giá trị riêng cho công ty này; xem Điều lệ và quyết định của chủ sở hữu."},{"id":"tq041","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giấy tờ, quyết định","stt":"3","giay_to":"Quyết định của chủ sở hữu (qua Chủ tịch công ty)","nguoi_ky":"Chủ tịch công ty nhân danh chủ sở hữu thực hiện quyền, nghĩa vụ của chủ sở hữu","can_cu":"Điều 81.1, 81.3","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Quyết định của Chủ tịch công ty về quyền của chủ sở hữu có hiệu lực từ ngày chủ sở hữu phê duyệt, trừ khi Điều lệ quy định khác."},{"id":"tq042","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giấy tờ, quyết định","stt":"4","giay_to":"Nghị quyết HĐTV (mô hình HĐTV)","nguoi_ky":"Họp khi có ít nhất 2/3 số thành viên dự họp; thông qua khi trên 50% số thành viên dự họp (hoặc số phiếu) tán thành. Chủ tịch HĐTV do chủ sở hữu bổ nhiệm hoặc HĐTV bầu","can_cu":"Điều 80.3, 80.5-7","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Sửa Điều lệ, tổ chức lại, chuyển nhượng một phần hoặc toàn bộ vốn điều lệ: ít nhất 75% số thành viên dự họp (hoặc phiếu). Biên bản họp theo Điều 60.2."},{"id":"tq043","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giấy tờ, quyết định","stt":"5","giay_to":"Bổ nhiệm, thuê Giám đốc/Tổng giám đốc","nguoi_ky":"HĐTV hoặc Chủ tịch công ty","can_cu":"Điều 82.1","nhan":"Rõ; Suy ra (người ký hợp đồng)","trang_thai":"hiệu lực","dieu_kien":"Nhiệm kỳ không quá 05 năm. Người thay mặt công ty ký hợp đồng lao động với Giám đốc: theo quyết định cấp bổ nhiệm hoặc Điều lệ."},{"id":"tq044","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giấy tờ, quyết định","stt":"6","giay_to":"Tuyển dụng lao động; bổ nhiệm người quản lý không thuộc HĐTV hoặc Chủ tịch công ty","nguoi_ky":"Giám đốc/Tổng giám đốc","can_cu":"Điều 82.2đ, k","nhan":"Rõ; Chưa XM (Bộ luật Lao động)","trang_thai":"hiệu lực","dieu_kien":"Hình thức ký hợp đồng lao động theo Bộ luật Lao động."},{"id":"tq045","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giấy tờ, quyết định","stt":"7","giay_to":"Lương, thù lao, thưởng của thành viên HĐTV, Chủ tịch công ty, Kiểm soát viên","nguoi_ky":"Chủ sở hữu công ty quyết định","can_cu":"Điều 84.2","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Được tính vào chi phí theo luật thuế TNDN và thể hiện riêng trong báo cáo tài chính."},{"id":"tq046","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giấy tờ, quyết định","stt":"8","giay_to":"Sửa đổi Điều lệ, tổ chức lại, chuyển nhượng vốn điều lệ","nguoi_ky":"Chủ sở hữu qua HĐTV (75%) hoặc qua Chủ tịch công ty","can_cu":"Điều 80.6; 81.3","nhan":"Rõ (mô hình HĐTV); Suy ra (mô hình Chủ tịch)","trang_thai":"hiệu lực","dieu_kien":"Mô hình Chủ tịch công ty: Luật không nêu tỷ lệ, theo quyết định của chủ sở hữu."},{"id":"tq047","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giấy tờ, quyết định","stt":"9","giay_to":"Giải thể","nguoi_ky":"Nghị quyết, quyết định giải thể có chữ ký chủ sở hữu công ty, Chủ tịch HĐTV","can_cu":"Điều 208.1đ","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Nội dung bắt buộc theo Điều 208.1."},{"id":"tq048","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giấy tờ, quyết định","stt":"10","giay_to":"Thông báo thay đổi nội dung đăng ký doanh nghiệp","nguoi_ky":"NĐDPL ký","can_cu":"Điều 31","nhan":"Rõ; Chưa XM (mẫu hồ sơ)","trang_thai":"hiệu lực","dieu_kien":"Mẫu hồ sơ cụ thể theo nghị định về đăng ký doanh nghiệp."},{"id":"tq049","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Ghi chú","stt":"11","giay_to":"Công ty TNHH một thành viên do cá nhân làm chủ sở hữu","nguoi_ky":"Chủ sở hữu là Chủ tịch công ty, có thể tự làm hoặc thuê Giám đốc/Tổng giám đốc","can_cu":"Điều 85; 86.6","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Quyền, nghĩa vụ của Giám đốc/Tổng giám đốc do Điều lệ và hợp đồng lao động quy định. Hợp đồng, giao dịch với chủ sở hữu hoặc người có liên quan phải được ghi chép và lưu thành hồ sơ riêng."},{"id":"tq050","loai_hinh":"Công ty cổ phần","nhom":"Giao dịch với người có liên quan","stt":"1","giay_to":"Đối tượng","nguoi_ky":"Cổ đông hoặc người đại diện cổ đông tổ chức sở hữu trên 10% cổ phần phổ thông; thành viên HĐQT, Giám đốc/Tổng giám đốc; doanh nghiệp phải kê khai theo Điều 164.2; người có liên quan của họ","can_cu":"Điều 167.1","nhan":"Rõ; Chưa XM (Điều 164.2)","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq051","loai_hinh":"Công ty cổ phần","nhom":"Giao dịch với người có liên quan","stt":"2","giay_to":"Cơ quan chấp thuận","nguoi_ky":"HĐQT nếu giá trị nhỏ hơn 35% tổng tài sản (hoặc tỷ lệ nhỏ hơn theo Điều lệ). ĐHĐCĐ cho các giao dịch còn lại, và cho vay, đi vay, bán tài sản trên 10% tổng tài sản với cổ đông sở hữu từ 51% cổ phần biểu quyết trở lên hoặc người liên quan","can_cu":"Điều 167.2-4","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Tỷ lệ thông qua tại ĐHĐCĐ theo Điều 148.1 và 148.4, trừ khi Điều lệ quy định khác."},{"id":"tq052","loai_hinh":"Công ty cổ phần","nhom":"Giao dịch với người có liên quan","stt":"3","giay_to":"Thời hạn quyết định","nguoi_ky":"15 ngày kể từ khi nhận thông báo (HĐQT), trừ khi Điều lệ quy định khác","can_cu":"Điều 167.2","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq053","loai_hinh":"Công ty cổ phần","nhom":"Giao dịch với người có liên quan","stt":"4","giay_to":"Người có lợi ích liên quan","nguoi_ky":"Thành viên HĐQT hoặc cổ đông có lợi ích liên quan không có quyền biểu quyết","can_cu":"Điều 167.2, 167.4","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq054","loai_hinh":"Công ty cổ phần","nhom":"Giao dịch với người có liên quan","stt":"5","giay_to":"Nghĩa vụ của người ký","nguoi_ky":"Thông báo đối tượng liên quan và gửi dự thảo hợp đồng hoặc nội dung chủ yếu cho HĐQT, Kiểm soát viên (và trình ĐHĐCĐ nếu thuộc khoản 3)","can_cu":"Điều 167.2, 167.4","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq055","loai_hinh":"Công ty cổ phần","nhom":"Giao dịch với người có liên quan","stt":"6","giay_to":"Hậu quả nếu ký sai","nguoi_ky":"Tòa án có thể tuyên vô hiệu; người ký, cổ đông, thành viên HĐQT hoặc Giám đốc liên quan bồi thường liên đới và hoàn trả lợi thu được","can_cu":"Điều 167.5","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq056","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giao dịch với người có liên quan","stt":"1","giay_to":"Đối tượng","nguoi_ky":"Thành viên, người đại diện theo ủy quyền của thành viên, Giám đốc/Tổng giám đốc, NĐDPL; người quản lý công ty mẹ và người có thẩm quyền bổ nhiệm họ; người có liên quan của các đối tượng này","can_cu":"Điều 67.1","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq057","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giao dịch với người có liên quan","stt":"2","giay_to":"Cơ quan chấp thuận","nguoi_ky":"HĐTV","can_cu":"Điều 67.1-2","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq058","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giao dịch với người có liên quan","stt":"3","giay_to":"Thời hạn quyết định","nguoi_ky":"15 ngày kể từ khi nhận thông báo, trừ khi Điều lệ quy định khác","can_cu":"Điều 67.2","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq059","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giao dịch với người có liên quan","stt":"4","giay_to":"Người có lợi ích liên quan","nguoi_ky":"Thành viên liên quan đến các bên trong giao dịch không được tính vào biểu quyết","can_cu":"Điều 67.2","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq060","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giao dịch với người có liên quan","stt":"5","giay_to":"Nghĩa vụ của người ký","nguoi_ky":"Thông báo cho thành viên HĐTV, Kiểm soát viên về đối tượng và lợi ích liên quan, kèm dự thảo hợp đồng hoặc nội dung chủ yếu","can_cu":"Điều 67.2","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq061","loai_hinh":"TNHH hai thành viên trở lên","nhom":"Giao dịch với người có liên quan","stt":"6","giay_to":"Hậu quả nếu ký sai","nguoi_ky":"Tòa án có thể tuyên vô hiệu; người ký, thành viên liên quan bồi thường và hoàn trả lợi thu được","can_cu":"Điều 67.3","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq062","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giao dịch với người có liên quan","stt":"1","giay_to":"Đối tượng","nguoi_ky":"Chủ sở hữu và người có liên quan; thành viên HĐTV, Chủ tịch công ty, Giám đốc/Tổng giám đốc, Kiểm soát viên; người quản lý của chủ sở hữu và người có thẩm quyền bổ nhiệm; người có liên quan","can_cu":"Điều 86.1","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq063","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giao dịch với người có liên quan","stt":"2","giay_to":"Cơ quan chấp thuận","nguoi_ky":"HĐTV hoặc Chủ tịch công ty, Giám đốc/Tổng giám đốc và Kiểm soát viên (trừ khi Điều lệ quy định khác)","can_cu":"Điều 86.1, 86.4","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":"Điều kiện thêm: các bên là chủ thể pháp lý độc lập, giá là giá thị trường, chủ sở hữu tuân thủ Điều 77.4."},{"id":"tq064","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giao dịch với người có liên quan","stt":"3","giay_to":"Thời hạn quyết định","nguoi_ky":"10 ngày kể từ khi nhận thông báo, trừ khi Điều lệ quy định khác","can_cu":"Điều 86.3","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq065","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giao dịch với người có liên quan","stt":"4","giay_to":"Người có lợi ích liên quan","nguoi_ky":"Người có liên quan đến các bên không có quyền biểu quyết; theo nguyên tắc đa số, mỗi người một phiếu","can_cu":"Điều 86.3","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq066","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giao dịch với người có liên quan","stt":"5","giay_to":"Nghĩa vụ của người ký","nguoi_ky":"Thông báo cho HĐTV hoặc Chủ tịch công ty, Giám đốc/Tổng giám đốc và Kiểm soát viên về đối tượng và lợi ích liên quan, kèm dự thảo hoặc nội dung chủ yếu","can_cu":"Điều 86.2","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""},{"id":"tq067","loai_hinh":"TNHH một thành viên (chủ sở hữu là tổ chức)","nhom":"Giao dịch với người có liên quan","stt":"6","giay_to":"Hậu quả nếu ký sai","nguoi_ky":"Tòa án có thể tuyên vô hiệu; người ký và người có liên quan là các bên liên đới bồi thường và hoàn trả lợi thu được","can_cu":"Điều 86.5","nhan":"Rõ","trang_thai":"hiệu lực","dieu_kien":""}];
+const TQ=()=>TQ_DEF.filter(r=>r&&r.giay_to&&!/hết hiệu lực|ngưng|tắt/i.test(String(r.trang_thai||"")));
 const srt=(a,b)=>(+a.stt||0)-(+b.stt||0);
 const e=s=>esc(s==null?"":String(s));
 const nhan=s=>{s=String(s||"").trim();if(!s)return"";
@@ -6359,7 +6446,7 @@ document.head.appendChild(css);
 const tab=document.createElement("button");tab.id="tptq";tab.textContent="Thẩm quyền ký";nav.appendChild(tab);
 const v=document.createElement("div");v.id="vtq";v.hidden=true;
 v.innerHTML=`<div class="tq-head"><h2>Thẩm quyền ký các loại giấy tờ theo Luật Doanh nghiệp</h2>
-<p>Căn cứ: bản hợp nhất Luật DN 67/VBHN-VPQH (Công báo số 1105+1106 ngày 31-8-2025). Ngưỡng tính trên tổng tài sản ở báo cáo tài chính gần nhất; Điều lệ công ty có thể quy định khác nên phải đối chiếu Điều lệ trước khi ký. Chỉ xem: nội dung sửa ở tab prof_tq của Google Sheet.</p></div>
+<p>Căn cứ: bản hợp nhất Luật DN 67/VBHN-VPQH (Công báo số 1105+1106 ngày 31-8-2025). Ngưỡng tính trên tổng tài sản ở báo cáo tài chính gần nhất; Điều lệ công ty có thể quy định khác nên phải đối chiếu Điều lệ trước khi ký. Nội dung tích hợp sẵn trong ứng dụng; khi luật thay đổi sẽ cập nhật theo bản mới của ứng dụng.</p></div>
 <nav class="tcsub" id="tqsub">${TYPES.map(t=>`<button data-k="${t.k}">${e(t.lab)}</button>`).join("")}</nav>
 <div class="tq-bar"><input id="tqq" type="search" placeholder="Tìm giấy tờ, người ký, Điều luật…" aria-label="Tìm trong bảng"><span class="tq-leg"><span class="tq-lg"><span class="tq-n tq-ro">Rõ</span> Luật nêu trực tiếp</span><span class="tq-lg"><span class="tq-n tq-sy">Suy ra</span> suy từ cấu trúc Luật</span><span class="tq-lg"><span class="tq-n tq-no">Chưa XM</span> chưa xác minh</span></span></div>
 <div id="tqbody"></div>`;
@@ -6401,300 +6488,7 @@ window.__tqRender=render;
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();
 
-/* ===== Trợ lý AI (Gemini): hỏi đáp trên dữ liệu app. Khóa API và model đọc từ tab ai_cfg của Sheet pháp chế
-   (chỉ giữ trong bộ nhớ trang, không ghi vào CFG, localStorage, sao lưu JSON hay GitHub). CCCD và số tài khoản được che trước khi gửi. ===== */
-(function(){
-function boot(){
-const tptc=document.getElementById("tptc");
-if(!tptc){console.error("Module Trợ lý AI: không tìm thấy thanh tab");return}
-const nav=tptc.parentNode;
-const e=s=>esc(s==null?"":String(s));
-const API="https://generativelanguage.googleapis.com/v1beta/models/";
-const MODELS=["gemini-3.8-flash","gemini-3.6-flash","gemini-4-argon"],FALLBACK="gemini-3.6-flash";
-let KEY="",MODEL="",LIMIT=150000,LIMIT_AQ=100000,chat=[],busy=false,lastCtx=null,AQD=null,AQERR="";
 
-const css=document.createElement("style");
-css.textContent=`
-#vai{padding-bottom:48px}
-#vai .ai-head{padding:14px 24px 4px}
-#vai .ai-head h2{margin:0 0 4px;font-size:18px}
-#vai .ai-head p{margin:2px 0;color:var(--mute);font-size:13px;line-height:1.5;max-width:100ch}
-#vai .ai-bar{display:flex;gap:8px 12px;align-items:center;flex-wrap:wrap;padding:6px 24px}
-#vai .ai-bar select{padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);max-width:100%}
-#vai .ai-stat{font-size:12.5px;color:var(--mute);flex:1 1 220px;min-width:0;overflow-wrap:anywhere}
-#vai .ai-chips{display:flex;gap:6px;flex-wrap:wrap;padding:4px 24px}
-#vai .ai-chips button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 14px;font-size:13px;text-align:left;white-space:normal}
-#vai .ai-log{padding:6px 24px;display:flex;flex-direction:column;gap:10px}
-#vai .ai-m{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;line-height:1.6;font-size:14px;overflow-wrap:anywhere;max-width:100%}
-#vai .ai-m.u{background:color-mix(in srgb,var(--brand) 8%,var(--card))}
-#vai .ai-m .w{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--mute);margin-bottom:4px}
-#vai .ai-m ul{margin:4px 0 4px 18px;padding:0}
-#vai .ai-m div{margin:0 0 6px}#vai .ai-m code{background:color-mix(in srgb,var(--brand) 10%,var(--card));border-radius:4px;padding:0 4px;font-size:.92em;overflow-wrap:anywhere}#vai .ai-m .w,#vai .ai-m .meta{margin-bottom:0}
-#vai .ai-m .meta{margin-top:8px;font-size:12px;color:var(--mute)}
-#vai .ai-m.err{border-color:var(--seal);color:var(--seal)}
-#vai .ai-form{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;padding:8px 24px}
-#vai .ai-form textarea{flex:1 1 320px;min-width:0;min-height:64px;max-height:260px;resize:vertical;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
-#vai .ai-empty{margin:10px 24px;color:var(--mute)}
-@media(max-width:760px){
-  #vai .ai-head,#vai .ai-bar,#vai .ai-chips,#vai .ai-log,#vai .ai-form,#vai .ai-empty{padding-left:12px;padding-right:12px;margin-left:0;margin-right:0}
-  #vai .ai-form button{flex:1 1 100%}
-}`;
-document.head.appendChild(css);
-
-const tab=document.createElement("button");tab.id="tpai";tab.textContent="Trợ lý AI";nav.appendChild(tab);
-const v=document.createElement("div");v.id="vai";v.hidden=true;
-v.innerHTML=`<div class="ai-head"><h2>Trợ lý AI (Gemini)</h2>
-<p>Công cụ rà soát dữ liệu trong app: đối chiếu dữ liệu app với kho văn bản pháp luật Aqua (số hiệu, hiệu lực, điều khoản trích, link gốc). Căn cứ pháp lý chỉ lấy từ Aqua, không dùng kiến thức ngoài kho. Dữ liệu được gửi tới Google Gemini; CCCD và số tài khoản được che trước khi gửi. Cuộc trò chuyện chỉ nằm trong trang này, tải lại trang là mất. Câu trả lời là bản tham khảo, cần đối chiếu văn bản gốc trước khi dùng.</p></div>
-<div class="ai-bar"><label>Model <select id="aimodel" aria-label="Chọn model Gemini"></select></label><label>Chế độ <select id="aimode" aria-label="Chọn chế độ"><option value="raso">Rà soát (dữ liệu app đối chiếu văn bản Aqua)</option><option value="tracuu">Tra cứu (chỉ dữ liệu app)</option></select></label><span class="ai-stat" id="aistat">Chưa tải khóa.</span><button id="aireload" type="button">Tải lại khóa và dữ liệu</button><button id="aiclear" type="button">Xóa cuộc trò chuyện</button></div>
-<div class="ai-chips" id="aichips"></div>
-<div class="ai-log" id="ailog"><p class="ai-empty">Nhập câu hỏi bên dưới. Ví dụ: tóm tắt các việc quá hạn, hoặc hỏi về một công ty, dự án, hồ sơ trong app.</p></div>
-<form class="ai-form" id="aiform"><textarea id="aiq" rows="3" placeholder="Nhập câu hỏi. Enter để gửi, Shift+Enter xuống dòng." aria-label="Câu hỏi cho Trợ lý AI"></textarea><button class="primary" id="aisend" type="submit">Gửi</button></form>`;
-const anchor=document.getElementById("vtq")||document.getElementById("vinv")||document.getElementById("vtc")||document.getElementById("vprof")||nav;
-anchor.after(v);
-
-const hide=()=>{v.hidden=true;tab.classList.remove("on")};
-[...nav.querySelectorAll("button")].forEach(b=>{if(b!==tab)b.addEventListener("click",hide)});
-tab.onclick=()=>{["vlist","vbud","vdash","vprof","vtc","vinv","vtq"].forEach(i=>{const x=document.getElementById(i);if(x)x.hidden=true});
-  nav.querySelectorAll("button").forEach(b=>b.classList.remove("on"));v.hidden=false;tab.classList.add("on");init()};
-
-const $=id=>document.getElementById(id);
-const CHIPS=["Rà soát các việc quá hạn hoặc sắp đến hạn, kèm căn cứ pháp lý nếu có","Rà soát các văn bản pháp luật được viện dẫn trong app còn hiệu lực không","Tóm tắt cơ cấu sở hữu vốn của các công ty trong app"];
-$("aichips").innerHTML=CHIPS.map(c=>`<button type="button">${e(c)}</button>`).join("");
-$("aichips").onclick=ev=>{const b=ev.target.closest("button");if(b){$("aiq").value=b.textContent;$("aiq").focus()}};
-
-function setModels(){
-  const sel=$("aimodel"),list=MODELS.slice();if(MODEL&&!list.includes(MODEL))list.unshift(MODEL);
-  sel.innerHTML=list.map(m=>`<option value="${e(m)}">${e(m)}${m==="gemini-4-argon"?" (suy luận mạnh)":m==="gemini-3.8-flash"?" (nhanh)":m==="gemini-3.6-flash"?" (dự phòng)":""}</option>`).join("");
-  sel.value=MODEL||list[0];
-}
-const stat=t=>{$("aistat").textContent=t};
-
-/* ---- che dữ liệu nhạy cảm ---- */
-let masked=0;
-const COLRE=/cccd|cmnd|cmt|can_?cuoc|căn cước|passport|ho_?chieu|hộ chiếu|so_?tk|stk|tai_?khoan|tài khoản|account|iban|swift|mat_?khau|mật khẩu|password|token|secret|api_?key|khoa_?api/i;
-function maskText(s){
-  return String(s)
-    .replace(/(?<![\p{L}\d])(stk|số tài khoản|số tk|tài khoản số|tk)(\s*[:.\-]?\s*)(\d[\d .\-]{5,}\d)/giu,(m,a,b)=>{masked++;return a+b+"[đã che]"})
-    .replace(/(?<!\d)\d{12}(?!\d)/g,()=>{masked++;return "[CCCD đã che]"})
-    .replace(/(?<!\d)\d{14,19}(?!\d)/g,()=>{masked++;return "[số dài đã che]"});
-}
-function cell(k,val){
-  if(val==null||val==="")return "";
-  if(COLRE.test(String(k))){masked++;return "[đã che]"}
-  let s=typeof val==="object"?JSON.stringify(val):String(val);
-  s=maskText(s).replace(/\s*\n\s*/g," ⏎ ");
-  return s.length>600?s.slice(0,600)+"…":s;
-}
-function rowsBlock(name,rows){
-  const keys=[];rows.forEach(r=>{if(r&&typeof r==="object")Object.keys(r).forEach(k=>{if(!keys.includes(k)&&r[k]!==""&&r[k]!=null&&!(Array.isArray(r[k])&&!r[k].length))keys.push(k)})});
-  if(!keys.length)return null;
-  const head="## "+name+" ("+rows.length+" dòng). Cột: "+keys.join(" | ");
-  const lines=rows.filter(r=>r&&typeof r==="object").map(r=>keys.map(k=>cell(k,r[k])).join(" | "));
-  return{name,head,lines,text:head+"\n"+lines.join("\n")};
-}
-const nrm=t=>String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d");
-const STOP=new Set(["khong","nhung","cua","cho","toi","nao","duoc","the","nay","nhu","khi","bao","nhieu","hay","cac","mot","theo","tai","luat","can"]);
-function buildContext(q){
-  masked=0;const blocks=[];
-  const G=typeof CFG!=="undefined"?CFG:{};
-  const cfgTop={};Object.keys(G).forEach(k=>{if(k!=="prof"&&k!=="key"&&k!=="seq"&&k!=="chunk"&&G[k]!=null&&G[k]!==""){cfgTop[k]=G[k]}});
-  if(Object.keys(cfgTop).length){const t="## Cấu hình chung\n"+cell("cfg",cfgTop);blocks.push({name:"Cấu hình chung",head:t,lines:[],text:t})}
-  if(typeof tasks!=="undefined"&&Array.isArray(tasks)&&tasks.length){const b=rowsBlock("Công việc (tab tasks)",tasks);if(b)blocks.push(b)}
-  if(typeof budget!=="undefined"&&Array.isArray(budget)&&budget.length){const b=rowsBlock("Ngân sách (tab budget)",budget);if(b)blocks.push(b)}
-  const P=G.prof||{};
-  Object.keys(P).forEach(k=>{
-    const val=P[k],tabName=((typeof SH_TAB!=="undefined"&&SH_TAB&&SH_TAB[k])||"prof_"+k);
-    if(Array.isArray(val)){if(val.length&&val.every(x=>x&&typeof x==="object")){const b=rowsBlock("Tab "+tabName,val);if(b)blocks.push(b)}}
-    else if(val!==""&&val!=null){const t="## Tab "+tabName+"\n"+cell(k,val);blocks.push({name:"Tab "+tabName,head:t,lines:[],text:t})}
-  });
-  const full=blocks.reduce((a,b)=>a+b.text.length,0);let rowsAll=0,rowsSent=0;
-  blocks.forEach(b=>{rowsAll+=b.lines.length;rowsSent+=b.lines.length});
-  if(full>LIMIT){
-    const qt=[...new Set(nrm(q||"").split(/[^a-z0-9]+/).filter(w=>w.length>=3&&!STOP.has(w)))];
-    const small=blocks.filter(b=>b.text.length<=5000||!b.lines.length),big=blocks.filter(b=>!small.includes(b));
-    let room=LIMIT-small.reduce((a,b)=>a+b.text.length,0)-big.reduce((a,b)=>a+b.head.length+60,0);
-    const items=[];
-    big.forEach((b,bi)=>b.lines.forEach((l,li)=>{const n=nrm(l);let sc=0;qt.forEach(w=>{if(n.includes(w))sc++});items.push({bi,li,sc,len:l.length+1})}));
-    items.sort((x,y)=>y.sc-x.sc||x.bi-y.bi||x.li-y.li);
-    const keep=big.map(()=>new Set());
-    for(const it of items){if(room<it.len)continue;room-=it.len;keep[it.bi].add(it.li)}
-    big.forEach((b,bi)=>{const ls=b.lines.filter((l,li)=>keep[bi].has(li));rowsSent-=b.lines.length-ls.length;
-      b.text=b.head+"\n"+ls.join("\n")+(ls.length<b.lines.length?"\n…(chỉ hiển thị "+ls.length+"/"+b.lines.length+" dòng, chọn theo độ liên quan với câu hỏi)":"")});
-  }
-  const text=blocks.map(b=>b.text).join("\n\n");
-  return{text,chars:text.length,full,blocks:blocks.length,cut:Math.max(0,full-text.length),rowsAll,rowsSent,masked};
-}
-function sysText(ctx,mode,aq){
-  const d=new Date().toLocaleDateString("vi-VN");
-  const head=`Bạn là công cụ rà soát dữ liệu cho Trưởng Pháp chế của tổ chức và các công ty thành viên, hoạt động bên trong app quản lý pháp chế. Hôm nay là ${d}.\n`;
-  const nhay="Một số thông tin nhạy cảm (CCCD, số tài khoản) đã bị che, đừng cố đoán.";
-  const rules=mode==="tracuu"?`Chế độ TRA CỨU. Quy tắc:
-1. Trả lời bằng tiếng Việt, kết luận trước rồi giải thích ngắn gọn.
-2. Chỉ dựa vào DỮ LIỆU APP bên dưới. Điều gì dữ liệu không có thì nói rõ "Dữ liệu app không có", không suy đoán, không bịa số hiệu văn bản, ngày tháng, Điều khoản, tên người.
-3. Mỗi nhận định ghi nguồn là tên tab và id (hoặc tên dòng) trong dữ liệu.
-4. Không đưa ra căn cứ pháp lý nằm ngoài dữ liệu app; cần căn cứ thì khuyên chuyển sang chế độ Rà soát.
-5. ${nhay}`:`Chế độ RÀ SOÁT. Bạn chỉ là công cụ đối chiếu DỮ LIỆU APP với KHO VĂN BẢN AQUA, không phải nguồn kiến thức pháp luật. Quy tắc:
-1. Trả lời bằng tiếng Việt, kết luận trước rồi giải thích ngắn gọn; người hỏi là luật sư cấp cao nên không giảng kiến thức cơ bản.
-2. Sự kiện chỉ lấy từ DỮ LIỆU APP (ghi tên tab và id dòng). Dữ liệu không có thì nói "Dữ liệu app không có", không suy đoán.
-3. Căn cứ pháp lý CHỈ lấy từ KHO VĂN BẢN AQUA. Tuyệt đối không dùng kiến thức pháp luật ngoài kho, không nêu số hiệu, Điều, Khoản, ngày không có trong kho. Khi cần căn cứ mà kho không có, viết: "Aqua chưa có căn cứ này, cần bổ sung vào Aqua" kèm tên loại văn bản cần tìm, không nêu số hiệu.
-4. Mỗi căn cứ nêu: số hiệu, tên văn bản, Điều/Khoản (nếu có trong phần điều khoản trích), tình trạng hiệu lực theo các cột ngày trong kho (có ngày hết hiệu lực hoặc "bị thay thế bởi" thì cảnh báo rõ), và link gốc nếu kho có (chỉ dùng đúng link trong kho).
-5. Nhãn: "quy định rõ" khi dựa vào điều khoản trích có nhãn quy định rõ; "chưa xác minh" khi chỉ có tóm tắt hoặc nhãn của kho ghi chưa xác minh. Nhắc đối chiếu bản gốc qua link.
-6. Bố cục: Kết luận; Phát hiện (mỗi phát hiện gồm: dữ liệu app, căn cứ Aqua, đánh giá phù hợp / chưa phù hợp / thiếu thông tin, đề xuất xử lý, ưu tiên bảo vệ công ty); Chỗ thiếu căn cứ trong Aqua; Điều cần người dùng xác nhận. Phần nào không liên quan thì bỏ.
-7. Không đưa quan điểm riêng ngoài dữ liệu và kho; ngoài phạm vi thì nói rõ là ngoài phạm vi rà soát.
-8. ${nhay}`;
-  return head+rules+"\n\nDỮ LIỆU APP:\n"+ctx.text+(mode==="tracuu"||!aq?"":"\n\n"+aq.text);
-}
-
-/* ---- khóa và cấu hình từ Sheet ---- */
-async function loadCfg(){
-  if(typeof SH==="undefined"||!SH||typeof shApi!=="function")throw new Error("Chưa kết nối Google Sheet: bấm Đồng bộ Google Sheet để đăng nhập, rồi mở lại tab này.");
-  let j;
-  try{j=await shApi("/values/"+encodeURIComponent("'ai_cfg'")+"!A1:C30")}
-  catch(err){if(/400|Unable to parse range|not found/i.test(err.message))throw new Error("Chưa có tab ai_cfg trong Sheet pháp chế.");throw err}
-  const o={};(j.values||[]).slice(1).forEach(r=>{if(r[0])o[String(r[0]).trim()]=String(r[1]==null?"":r[1]).trim()});
-  KEY=o.gemini_api_key||"";MODEL=o.gemini_model||MODELS[0];
-  const lim=parseInt(o.gioi_han_ky_tu,10);if(lim>20000)LIMIT=Math.min(lim,1500000);
-  const la=parseInt(o.gioi_han_aqua,10);if(la>10000)LIMIT_AQ=Math.min(la,600000);
-  if(!KEY)throw new Error("Chưa có khóa Gemini: dán khóa vào ô gia_tri của dòng gemini_api_key trong tab ai_cfg của Sheet pháp chế, rồi bấm Tải lại khóa và dữ liệu.");
-}
-/* ---- kho văn bản Aqua (nguồn căn cứ pháp lý duy nhất của chế độ Rà soát) ---- */
-const un=t=>String(t==null?"":t).replace(/&amp;/g,"&");
-async function loadAqua(){
-  AQD=null;AQERR="";
-  try{
-    if(typeof aqId!=="function"||!aqId())throw new Error("Chưa khai báo Sheet kho văn bản pháp luật (khóa aqua.sheet trong tab Quy tắc)");
-    const j=await shApi("/values:batchGet?majorDimension=ROWS&valueRenderOption=FORMATTED_VALUE&ranges="+shRange("Văn bản")+"&ranges="+shRange("Trích điều khoản"),undefined,aqId());
-    const vr=j.valueRanges||[],tbl=x=>{const v=(x&&x.values)||[],h=(v[0]||[]).map(c=>String(c).trim());return{h,rows:v.slice(1)}};
-    const dv=tbl(vr[0]),dk=tbl(vr[1]),ix=(t,n)=>t.h.indexOf(n),g=(t,r,n)=>{const k=ix(t,n);return k>=0?un(r[k]):""};
-    const docs=[],arts=[];
-    dv.rows.forEach(r=>{const so=g(dv,r,"Số hiệu");if(!so)return;if(/^(x|có|true|1|ẩn)$/i.test(g(dv,r,"Ẩn").trim()))return;
-      const cut=(t,n)=>t.length>n?t.slice(0,n)+"…":t;
-      docs.push({so,line:"[VB] "+[so,g(dv,r,"Loại"),g(dv,r,"Tên văn bản"),"tóm tắt: "+g(dv,r,"Tóm tắt"),"ban hành: "+g(dv,r,"Ngày ban hành"),"hiệu lực: "+g(dv,r,"Ngày hiệu lực"),"hết hiệu lực: "+g(dv,r,"Ngày hết hiệu lực"),"thay thế/sửa đổi: "+cut(g(dv,r,"Thay thế / sửa đổi"),300),"bị thay thế bởi: "+g(dv,r,"Bị thay thế bởi"),"lĩnh vực: "+g(dv,r,"Lĩnh vực"),"lưu ý: "+g(dv,r,"Lưu ý"),"kiểm hiệu lực lần cuối: "+g(dv,r,"Kiểm hiệu lực lần cuối"),"link gốc: "+g(dv,r,"Link văn bản gốc"),"nội dung chính: "+cut(g(dv,r,"Nội dung chính").replace(/\s*\n\s*/g," ⏎ "),500)].map(x=>String(x).replace(/\s+(?=[,|])/g,"")).join(" | ")})});
-    dk.rows.forEach(r=>{const so=g(dk,r,"Số hiệu văn bản");if(!so)return;
-      arts.push({so,line:"[ĐK] "+[so,g(dk,r,"Điều"),g(dk,r,"Khoản/Điểm"),g(dk,r,"Chủ đề"),"nội dung: "+g(dk,r,"Nội dung trích (tóm lược sát văn bản)"),"nhãn: "+g(dk,r,"Nhãn"),"link: "+g(dk,r,"Link tới bản gốc"),"ghi chú: "+g(dk,r,"Ghi chú")].join(" | ")})});
-    if(!docs.length)throw new Error("tab Văn bản trống hoặc đổi tên cột");
-    AQD={docs,arts};
-  }catch(err){AQERR=err.message||String(err)}
-}
-const REFRE=/\d{1,4}\/\d{4}\/[A-Za-zĐđ][A-Za-zĐđ0-9\-]*/g;
-function buildAqua(q,appText){
-  if(!AQD)return null;
-  const nz=x=>nrm(x).replace(/[^a-z0-9\/]/g,"");
-  const refs=new Set((String(appText||"").match(REFRE)||[]).map(nz));
-  (String(q||"").match(REFRE)||[]).forEach(x=>refs.add(nz(x)));
-  const qt=[...new Set(nrm(q||"").split(/[^a-z0-9]+/).filter(w=>w.length>=3&&!STOP.has(w)))];
-  const items=[];
-  const add=(arr,kind)=>arr.forEach((it,li)=>{const n=nrm(it.line);let sc=refs.has(nz(it.so))?5:0;qt.forEach(w=>{if(n.includes(w))sc++});if(sc>0)items.push({kind,li,sc,len:it.line.length+1})});
-  add(AQD.docs,"d");add(AQD.arts,"a");
-  items.sort((x,y)=>y.sc-x.sc||(x.kind===y.kind?x.li-y.li:(x.kind==="d"?-1:1)));
-  let room=LIMIT_AQ;const kd=new Set(),ka=new Set();
-  for(const it of items){if(room<it.len)continue;room-=it.len;(it.kind==="d"?kd:ka).add(it.li)}
-  const ld=AQD.docs.filter((x,i)=>kd.has(i)).map(x=>x.line),la=AQD.arts.filter((x,i)=>ka.has(i)).map(x=>x.line);
-  const text="## KHO VĂN BẢN AQUA: nguồn căn cứ pháp lý duy nhất ("+ld.length+"/"+AQD.docs.length+" văn bản và "+la.length+"/"+AQD.arts.length+" điều khoản trích, chọn theo câu hỏi và theo số hiệu được viện dẫn trong dữ liệu app)\n"+
-    (ld.length?ld.join("\n"):"(không có văn bản nào khớp câu hỏi)")+"\n"+(la.length?"\n## Điều khoản trích từ Aqua\n"+la.join("\n"):"");
-  return{text,chars:text.length,docs:ld.length,docsAll:AQD.docs.length,arts:la.length,artsAll:AQD.arts.length};
-}
-
-let inited=false;
-async function init(force){
-  if(inited&&!force)return;
-  stat("Đang tải khóa từ Sheet…");
-  try{await loadCfg();setModels();await loadAqua();lastCtx=buildContext();inited=true;
-    stat("Sẵn sàng. Dữ liệu app "+lastCtx.full.toLocaleString("vi-VN")+" ký tự ("+lastCtx.blocks+" nhóm); mỗi câu hỏi gửi tối đa "+LIMIT.toLocaleString("vi-VN")+" ký tự, chọn lọc theo câu hỏi. Che "+lastCtx.masked+" chuỗi nhạy cảm. "+(AQD?"Kho Aqua: "+AQD.docs.length+" văn bản, "+AQD.arts.length+" điều khoản trích.":"Chưa đọc được kho Aqua ("+AQERR+"): chế độ Rà soát chưa dùng được, chỉ Tra cứu."))}
-  catch(err){inited=false;KEY="";setModels();stat(err.message)}
-}
-$("aireload").onclick=()=>init(true);
-$("aiclear").onclick=()=>{chat=[];$("ailog").innerHTML=`<p class="ai-empty">Đã xóa cuộc trò chuyện.</p>`};
-
-/* ---- hiển thị ---- */
-function md(s){
-  const known=(lastCtx?lastCtx.text+(lastCtx.aq?lastCtx.aq.text:""):"");
-  const okUrl=u=>{const r=un(u).replace(/[.,;:)]+$/,"");return r.length>12&&known.includes(r)};
-  const lines=e(s).split("\n"),out=[];let inul=false;
-  const link=(u,t)=>{const clean=u.replace(/[.,;:)]+$/,""),tail=u.slice(clean.length);
-    return okUrl(clean)?`<a href="${clean}" target="_blank" rel="noopener noreferrer">${t||clean}</a>${tail}`:(t?t+" ("+clean+")":clean)+tail};
-  lines.forEach(l=>{
-    let b=l.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,(m,t,u)=>link(u,t));
-    b=b.replace(/(^|[\s(])(https?:\/\/[^\s<"]+)/g,(m,pre,u)=>pre+link(u,""));
-    b=b.replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/(^|[\s(])\*([^*\s][^*]*?)\*(?=[\s).,;:]|$)/g,"$1<i>$2</i>").replace(/`([^`]+)`/g,"<code>$1</code>").replace(/^#{1,4}\s+(.*)$/,"<b>$1</b>");
-    const m=/^\s*[-*•]\s+(.*)$/.exec(b);
-    if(m){if(!inul){out.push("<ul>");inul=true}out.push("<li>"+m[1]+"</li>")}
-    else{if(inul){out.push("</ul>");inul=false}if(b.trim())out.push("<div>"+b+"</div>")}
-  });
-  if(inul)out.push("</ul>");return out.join("");
-}
-function add(cls,who,html,meta){
-  const log=$("ailog");const emp=log.querySelector(".ai-empty");if(emp)emp.remove();
-  const d=document.createElement("div");d.className="ai-m "+cls;
-  d.innerHTML=`<div class="w">${e(who)}</div>${html}${meta?`<div class="meta">${e(meta)}</div>`:""}`;
-  log.appendChild(d);d.scrollIntoView({block:"end",behavior:"smooth"});return d;
-}
-
-/* ---- gọi Gemini ---- */
-function errMsg(status,body){
-  if(status===400&&/API key|API_KEY_INVALID/i.test(body))return "Khóa Gemini không hợp lệ. Kiểm tra ô gemini_api_key trong tab ai_cfg.";
-  if(status===400)return "Gemini từ chối yêu cầu (400). Có thể dữ liệu gửi quá lớn: giảm gioi_han_ky_tu trong tab ai_cfg. "+body.slice(0,160);
-  if(status===403)return "Khóa Gemini không có quyền hoặc bị giới hạn tên miền (403). Kiểm tra giới hạn khóa trong Google AI Studio.";
-  if(status===404)return "Không thấy model "+MODEL+" (404). Đổi gemini_model trong tab ai_cfg.";
-  if(status===429)return "Đã vượt hạn mức Gemini (429). Chờ một lúc rồi hỏi lại.";
-  if(status===500||status===503||status===504)return "Gemini đang quá tải ("+status+"), cả model chính và model dự phòng đều chưa trả lời. Thường chỉ tạm thời, chờ vài phút rồi hỏi lại.";
-  return "Lỗi Gemini "+status+": "+body.slice(0,160);
-}
-async function ask(q){
-  if(busy)return;
-  if(!inited)await init(true);
-  if(!KEY){add("err","Lỗi",e($("aistat").textContent));return}
-  MODEL=$("aimodel").value||MODEL;
-  const qm=maskText(q);
-  busy=true;$("aisend").disabled=true;
-  add("u","Câu hỏi",md(qm));
-  const wait=add("","Gemini","<div>Đang trả lời…</div>");
-  let phase="Đang trả lời",t0=Date.now();
-  const say=t=>{phase=t};
-  const tick=setInterval(()=>{const d=wait.querySelector("div:not(.w)");if(d)d.textContent=phase+"… "+Math.round((Date.now()-t0)/1000)+" giây"},1000);
-  try{
-    lastCtx=buildContext(qm);
-    const mode=$("aimode").value,aq=mode==="raso"?buildAqua(qm,lastCtx.text):null;
-    if(mode==="raso"&&!aq)throw new Error("Chưa đọc được kho Aqua"+(AQERR?" ("+AQERR+")":"")+". Chế độ Rà soát cần Aqua làm nguồn căn cứ: kiểm tra quyền xem Sheet Aqua rồi bấm Tải lại khóa và dữ liệu, hoặc chuyển sang Tra cứu.");
-    lastCtx.aq=aq;
-    const contents=chat.concat([{role:"user",parts:[{text:qm}]}]);
-    const payload=JSON.stringify({systemInstruction:{parts:[{text:sysText(lastCtx,mode,aq)}]},contents,generationConfig:{temperature:0.2}});
-    const busyCode=c=>c===500||c===503||c===504;
-    const order=[MODEL].concat(MODEL!==FALLBACK?[FALLBACK]:[]);
-    let r=null,raw="",used=MODEL,timedOut=false;
-    for(let mi=0;mi<order.length;mi++){
-      used=order[mi];timedOut=false;say("Đang hỏi "+used);
-      for(let at=0;at<3;at++){
-        const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),150000);
-        try{r=await fetch(API+encodeURIComponent(used)+":generateContent",{method:"POST",signal:ctl.signal,headers:{"Content-Type":"application/json","x-goog-api-key":KEY},body:payload});raw=await r.text()}
-        catch(x){if(x&&x.name==="AbortError"){timedOut=true;r=null;break}throw x}
-        finally{clearTimeout(to)}
-        if(r.ok||!busyCode(r.status))break;
-        if(at<2){say("Gemini quá tải ("+used+"), thử lại lần "+(at+2));await new Promise(res=>setTimeout(res,3000*(at+1)))}
-      }
-      if(!timedOut&&(r.ok||!busyCode(r.status)))break;
-      if(mi+1<order.length)say((timedOut?"Model "+used+" quá chậm":"Model "+used+" quá tải")+", chuyển sang "+order[mi+1]);
-    }
-    if(timedOut)throw new Error("Hết thời gian chờ Gemini (150 giây mỗi model). Dữ liệu gửi đi có thể quá lớn: giảm gioi_han_ky_tu trong tab ai_cfg, hoặc hỏi lại câu ngắn và cụ thể hơn.");
-    if(!r.ok){if(r.status===400&&/API key|API_KEY_INVALID/i.test(raw)){KEY="";inited=false}throw new Error(errMsg(r.status,raw))}
-    let j;try{j=JSON.parse(raw)}catch(x){throw new Error("Gemini trả về dữ liệu không đọc được")}
-    const cand=(j.candidates||[])[0],txt=cand&&cand.content&&cand.content.parts?cand.content.parts.map(p=>p.text||"").join(""):"";
-    if(!txt){const why=(j.promptFeedback&&j.promptFeedback.blockReason)||(cand&&cand.finishReason)||"không rõ";throw new Error("Gemini không trả lời (lý do: "+why+")")}
-    chat.push({role:"user",parts:[{text:qm}]},{role:"model",parts:[{text:txt}]});
-    if(chat.length>20)chat=chat.slice(-20);
-    wait.remove();
-    add("","Gemini · "+used+" · "+($("aimode").value==="raso"?"rà soát":"tra cứu"),md(txt),(used!==MODEL?"Model "+MODEL+" không trả lời kịp nên đã dùng "+used+". ":"")+"Đã gửi "+lastCtx.chars.toLocaleString("vi-VN")+"/"+lastCtx.full.toLocaleString("vi-VN")+" ký tự dữ liệu app"+(lastCtx.aq?" và "+lastCtx.aq.chars.toLocaleString("vi-VN")+" ký tự từ Aqua ("+lastCtx.aq.docs+" văn bản, "+lastCtx.aq.arts+" điều khoản)":"")+(lastCtx.rowsSent<lastCtx.rowsAll?" ("+lastCtx.rowsSent+"/"+lastCtx.rowsAll+" dòng, chọn theo câu hỏi)":"")+", che "+lastCtx.masked+" chuỗi nhạy cảm, trong "+Math.round((Date.now()-t0)/1000)+" giây. Cần đối chiếu văn bản gốc.");
-  }catch(err){
-    wait.remove();add("err","Lỗi",e(err.message));
-  }
-  clearInterval(tick);busy=false;$("aisend").disabled=false;
-}
-$("aiform").onsubmit=ev=>{ev.preventDefault();const q=$("aiq").value.trim();if(!q)return;$("aiq").value="";ask(q)};
-$("aiq").addEventListener("keydown",ev=>{if(ev.key==="Enter"&&!ev.shiftKey&&!ev.isComposing){ev.preventDefault();$("aiform").requestSubmit()}});
-window.__aiBuild=buildContext;window.__aiMask=maskText;
-}
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
-})();
 
 /* ===== Tab Lịch năm: timeline ngang đầu việc pháp chế theo tháng. Đọc tab lich_nam của Sheet pháp chế, chỉ xem (sửa ở Sheet).
    Cột: id, ky (YYYY-MM), han, loai (law|int), phap_nhan, dau_viec, mo_ta, cspl, nhan, nhom (A theo tháng, B theo sự kiện, C việc nền, D ghi chú thay đổi), nguoi_pt, trang_thai ===== */
@@ -6705,6 +6499,8 @@ if(!tptc){console.error("Module Lịch năm: không tìm thấy thanh tab");retu
 const nav=tptc.parentNode;
 const e=s=>esc(s==null?"":String(s));
 const COS_LN=COS();
+/* Mốc luật định tích hợp sẵn; đầu việc nội bộ lấy từ tab lich_nam của Sheet (nếu có) hoặc dữ liệu demo */
+const LN_DEF=[{"id":"LAW-L04","ky":"2027-01","han":"Theo hạn của địa phương","loai":"law","phap_nhan":"Đơn vị có sản xuất","dau_viec":"Báo cáo công tác bảo vệ môi trường năm trước","mo_ta":"Đơn vị có hoạt động sản xuất, kinh doanh thuộc diện phải báo cáo.","cspl":"Luật Bảo vệ môi trường 2020; Thông tư 02/2022/TT-BTNMT","nhan":"chưa xác minh","nhom":"A","nguoi_pt":"","trang_thai":""},{"id":"LAW-L05","ky":"2027-01","han":"Theo hạn của từng dự án","loai":"law","phap_nhan":"Các dự án","dau_viec":"Báo cáo giám sát, đánh giá đầu tư hằng năm","mo_ta":"Áp dụng với các dự án đang triển khai.","cspl":"Luật Đầu tư; nghị định về giám sát đầu tư","nhan":"chưa xác minh","nhom":"A","nguoi_pt":"","trang_thai":""},{"id":"LAW-L08","ky":"2027-02","han":"Trước khi gửi thông báo mời họp","loai":"law","phap_nhan":"Tất cả","dau_viec":"Chốt danh sách cổ đông có quyền dự họp","mo_ta":"Lập từ sổ đăng ký cổ đông; không quá 10 ngày trước ngày gửi giấy mời họp, Điều lệ có thể quy định ngắn hơn (đối chiếu qua bài hướng dẫn, chưa đọc văn bản gốc).","cspl":"Điều 141 Luật Doanh nghiệp 2020","nhan":"quy định rõ","nhom":"A","nguoi_pt":"","trang_thai":""},{"id":"LAW-L11","ky":"2027-03","han":"Chậm nhất 21 ngày trước ngày họp","loai":"law","phap_nhan":"Tất cả","dau_viec":"Gửi thông báo mời họp ĐHĐCĐ","mo_ta":"Kèm tài liệu họp; đăng website nếu công ty có.","cspl":"Điều 143 Luật Doanh nghiệp 2020","nhan":"quy định rõ","nhom":"A","nguoi_pt":"","trang_thai":""},{"id":"LAW-L12","ky":"2027-03","han":"Khoảng 31/03","loai":"law","phap_nhan":"Tất cả","dau_viec":"Quyết toán thuế TNDN và nộp báo cáo tài chính năm","mo_ta":"Phối hợp kế toán, kiểm tra tính hợp lệ của hợp đồng và chứng từ giao dịch bên liên quan. Luật Quản lý thuế có thể đã được thay bằng luật mới (hiệu lực 2026), cần xác minh.","cspl":"Luật Quản lý thuế 2019; Nghị định 132/2020/NĐ-CP","nhan":"chưa xác minh","nhom":"A","nguoi_pt":"","trang_thai":""},{"id":"LAW-L13","ky":"2027-03","han":"Khoảng 31/03","loai":"law","phap_nhan":"Tất cả","dau_viec":"Quyết toán thuế TNCN của tổ chức trả thu nhập","mo_ta":"Rà soát hợp đồng lao động; cá nhân tự quyết toán có hạn riêng (khoảng 30/04).","cspl":"Luật Quản lý thuế 2019","nhan":"chưa xác minh","nhom":"A","nguoi_pt":"","trang_thai":""},{"id":"LAW-L14","ky":"2027-04","han":"Chậm nhất 30/04 (gia hạn tối đa đến 30/06)","loai":"law","phap_nhan":"Tất cả","dau_viec":"Tổ chức ĐHĐCĐ thường niên","mo_ta":"Họp trong 4 tháng kể từ ngày kết thúc năm tài chính, gia hạn tối đa đến 30/06; ban hành nghị quyết và biên bản. Mốc 31/03 chỉ đúng nếu Điều lệ quy định chặt hơn.","cspl":"Điều 139 Luật Doanh nghiệp 2020","nhan":"quy định rõ","nhom":"A","nguoi_pt":"","trang_thai":""},{"id":"LAW-L15","ky":"2027-04","han":"Trong 15 ngày sau họp","loai":"law","phap_nhan":"Tất cả","dau_viec":"Lập biên bản, nghị quyết và gửi cổ đông","mo_ta":"Biên bản làm xong và thông qua trước khi bế mạc; gửi đến tất cả cổ đông trong 15 ngày kể từ ngày kết thúc họp, khoản 5 Điều 150 (đối chiếu qua bài hướng dẫn, chưa đọc văn bản gốc).","cspl":"Điều 150 Luật Doanh nghiệp 2020","nhan":"quy định rõ","nhom":"A","nguoi_pt":"","trang_thai":""},{"id":"LAW-L18","ky":"2027-05","han":"Chậm nhất 31/05","loai":"law","phap_nhan":"Đơn vị thuê đất","dau_viec":"Nộp tiền thuê đất kỳ 1","mo_ta":"Áp dụng với thửa đất thuê trả tiền hằng năm (dự án, nhà xưởng).","cspl":"Nghị định về thu tiền thuê đất","nhan":"chưa xác minh","nhom":"A","nguoi_pt":"","trang_thai":""},{"id":"LAW-L19","ky":"2027-06","han":"Chậm nhất 30/06","loai":"law","phap_nhan":"Tất cả","dau_viec":"Hạn cuối họp ĐHĐCĐ nếu đã gia hạn","mo_ta":"Quá hạn không họp: rủi ro xử phạt, cổ đông đủ điều kiện có quyền yêu cầu triệu tập. Xin gia hạn bằng văn bản từ tháng 3 nếu sắp trễ.","cspl":"Điều 139 Luật Doanh nghiệp 2020","nhan":"quy định rõ","nhom":"A","nguoi_pt":"","trang_thai":""},{"id":"LAW-L20","ky":"2027-06","han":"Khoảng 05/06","loai":"law","phap_nhan":"Tất cả","dau_viec":"Báo cáo tình hình thay đổi lao động 6 tháng","mo_ta":"Nếu thuộc diện phải báo cáo. Nguồn tham khảo ghi trước ngày 05/6 (chưa đọc văn bản gốc); cơ quan nhận báo cáo theo hướng dẫn hiện hành.","cspl":"Khoản 2 Điều 4 Nghị định 145/2020/NĐ-CP, sửa đổi bởi Nghị định 35/2022/NĐ-CP","nhan":"chưa xác minh","nhom":"A","nguoi_pt":"","trang_thai":""},{"id":"LAW-L27","ky":"2027-10","han":"Chậm nhất 31/10","loai":"law","phap_nhan":"Đơn vị thuê đất","dau_viec":"Nộp tiền thuê đất kỳ 2 và thuế sử dụng đất","mo_ta":"Theo hồ sơ thuê đất, thuế đất của từng pháp nhân.","cspl":"Nghị định về thu tiền thuê đất; pháp luật về thuế sử dụng đất","nhan":"chưa xác minh","nhom":"A","nguoi_pt":"","trang_thai":""},{"id":"LAW-L29","ky":"2027-12","han":"Khoảng 05/12 hoặc 25/12 (chưa chốt)","loai":"law","phap_nhan":"Tất cả","dau_viec":"Báo cáo tình hình thay đổi lao động cả năm","mo_ta":"Nếu thuộc diện phải báo cáo. Hai nguồn ghi hai mốc khác nhau (trước 05/12 và 25/12), cần đối chiếu văn bản gốc trước khi dùng.","cspl":"Khoản 2 Điều 4 Nghị định 145/2020/NĐ-CP, sửa đổi bởi Nghị định 35/2022/NĐ-CP","nhan":"chưa xác minh","nhom":"A","nguoi_pt":"","trang_thai":""},{"id":"LAW-B01","ky":"","han":"10 ngày kể từ ngày thay đổi (sơ bộ)","loai":"law","phap_nhan":"Tất cả","dau_viec":"Đăng ký doanh nghiệp: thông báo thay đổi","mo_ta":"Nội dung ĐKDN, người đại diện, vốn điều lệ, địa chỉ.","cspl":"Luật Doanh nghiệp 2020; Nghị định 168/2025/NĐ-CP","nhan":"chưa xác minh","nhom":"B","nguoi_pt":"","trang_thai":""}];
 let ROWS=null,fLoai="all",fCo="",busy=false;
 
 const css=document.createElement("style");
@@ -6760,7 +6556,7 @@ document.head.appendChild(css);
 const tab=document.createElement("button");tab.id="tpln";tab.textContent="Lịch năm";nav.appendChild(tab);
 const v=document.createElement("div");v.id="vln";v.hidden=true;
 v.innerHTML=`<div class="ln-head"><h2>Lịch năm pháp chế 2027</h2>
-<p>Các đầu việc pháp chế của các pháp nhân xếp theo tháng. Dữ liệu đọc từ tab lich_nam của Sheet của bạn và chỉ để xem; muốn thêm, sửa hoặc giao người phụ trách thì sửa ở Sheet rồi bấm Tải lại. Năm tài chính giả định trùng năm dương lịch. Căn cứ pháp lý có nhãn "chưa xác minh" cần tra nguồn hiện hành trước khi dùng.</p></div>
+<p>Gồm các mốc pháp định có sẵn trong ứng dụng và đầu việc nội bộ đọc từ tab lich_nam của Sheet (nếu đã nối). Chỉ để xem; muốn thêm, sửa hoặc giao người phụ trách đầu việc nội bộ thì sửa ở Sheet rồi bấm Tải lại. Năm tài chính giả định trùng năm dương lịch. Căn cứ có nhãn "chưa xác minh" cần tra nguồn hiện hành trước khi dùng.</p></div>
 <div class="ln-bar"><div class="ln-chips" id="lnf" role="group" aria-label="Lọc theo loại việc"><button type="button" data-l="all" aria-pressed="true">Tất cả</button><button type="button" data-l="law" aria-pressed="false">Mốc pháp định</button><button type="button" data-l="int" aria-pressed="false">Nội bộ</button></div>
 <label>Pháp nhân <select id="lnco" aria-label="Lọc theo pháp nhân"><option value="">Tất cả</option>${COS_LN.map(c=>`<option>${c}</option>`).join("")}</select></label>
 <span class="ln-stat" id="lnstat">Chưa tải dữ liệu.</span><button id="lnreload" type="button">Tải lại</button></div>
@@ -6777,20 +6573,24 @@ tab.onclick=()=>{["vlist","vbud","vdash","vprof","vtc","vinv","vtq","vai"].forEa
 
 async function load(force){
   if(ROWS&&!force){render();return}
-  if(busy)return;busy=true;$("lnstat").textContent="Đang đọc Sheet...";
+  if(busy)return;busy=true;$("lnstat").textContent="Đang đọc...";
+  let ext=[],note="";
   try{
-    if(typeof SH==="undefined"||!SH||typeof shApi!=="function")throw new Error("Chưa kết nối Google Sheet: bấm Đồng bộ Google Sheet để đăng nhập, rồi mở lại tab này.");
-    let j;
-    try{j=await shApi("/values/"+encodeURIComponent("'lich_nam'")+"!A1:L400")}
-    catch(err){if(/400|Unable to parse range|not found/i.test(err.message))throw new Error("Chưa có tab lich_nam trong Sheet.");throw err}
-    const vals=j.values||[],h=(vals[0]||[]).map(c=>String(c).trim());
-    ROWS=vals.slice(1).map(r=>{const o={};h.forEach((k,i)=>{o[k]=String(r[i]==null?"":r[i]).trim()});return o}).filter(o=>o.id&&o.dau_viec);
-    render();
-  }catch(err){ROWS=null;$("lnstat").textContent="";$("lnbody").innerHTML=`<p class="ln-empty">${e(err.message)}</p>`}
+    if(typeof SH!=="undefined"&&SH&&typeof shApi==="function"){
+      try{const j=await shApi("/values/"+encodeURIComponent("'lich_nam'")+"!A1:L400");
+        const vals=j.values||[],h=(vals[0]||[]).map(c=>String(c).trim());
+        ext=vals.slice(1).map(r=>{const o={};h.forEach((k,i)=>{o[k]=String(r[i]==null?"":r[i]).trim()});return o}).filter(o=>o.id&&o.dau_viec)}
+      catch(err){if(!/400|Unable to parse range|not found/i.test(err.message))note="Không đọc được đầu việc nội bộ từ Sheet: "+err.message}
+    }else if(window.__LN_DEMO)ext=window.__LN_DEMO.slice();
+  }catch(err){note=err.message}
+  const nm=x=>String(x||"").toLowerCase().replace(/\s+/g," ").trim(),have=new Set(ext.map(o=>nm(o.dau_viec)));
+  ROWS=LN_DEF.filter(o=>!have.has(nm(o.dau_viec))).concat(ext);
+  render();
+  if(note)$("lnstat").textContent=note;
   busy=false;
 }
 const MON=ky=>{const m=/^(\d{4})-(\d\d)$/.exec(ky||"");return m?{y:+m[1],m:+m[2]}:null};
-const coOk=o=>{if(!fCo)return true;const p=(o.phap_nhan||"").toUpperCase();if(/CẢ \d/.test(p))return true;if(COS_LN.some(c=>p.includes(c)))return p.includes(fCo);return true};
+const coOk=o=>{if(!fCo)return true;const p=(o.phap_nhan||"").toUpperCase();if(/CẢ/.test(p))return true;if(COS_LN.some(c=>p.includes(c)))return p.includes(fCo);return true};
 const loaiOk=o=>fLoai==="all"||o.loai===fLoai;
 const tagH=n=>n==="quy định rõ"?`<span class="ln-tag ok">quy định rõ</span>`:n==="chưa xác minh"?`<span class="ln-tag no">chưa xác minh</span>`:"";
 function card(o){
@@ -6814,7 +6614,7 @@ function render(){
   const notes=D.length?`<section class="ln-sec"><h3>Điểm khác so với bản nháp</h3>${D.map(o=>`<div class="ln-note"><b>${e(o.dau_viec)}</b>${e(o.mo_ta)}${o.cspl?` <span style="color:var(--mute)">Căn cứ: ${e(o.cspl)}</span> ${tagH(o.nhan)}`:""}</div>`).join("")}</section>`:"";
   $("lnbody").innerHTML=`<div class="ln-scroll" tabindex="0" aria-label="Timeline đầu việc theo tháng, cuộn ngang"><div class="ln-board" style="--n:${kys.length}"><div class="ln-cols">${cards}</div><div class="ln-axis ln-cols">${dots}</div><div class="ln-cols">${labs}</div></div></div>`+
     sec("B","Việc theo sự kiện","Không có mốc cố định; cần kế hoạch dự phòng trong năm.")+sec("C","Việc nền của phòng pháp chế","")+notes+
-    `<p class="ln-empty">Kéo ngang để xem hết các tháng. Bản nháp đầu việc dựng ngày 12/11/2026; mốc ngày và căn cứ có nhãn "chưa xác minh" chưa tra nguồn hiện hành.</p>`;
+    `<p class="ln-empty">Kéo ngang để xem hết các tháng. Mốc ngày và căn cứ có nhãn "chưa xác minh" cần tra nguồn hiện hành trước khi dùng.</p>`;
 }
 $("lnf").onclick=ev=>{const b=ev.target.closest("button");if(!b)return;fLoai=b.dataset.l;$("lnf").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));if(ROWS)render()};
 $("lnco").onchange=ev=>{fCo=ev.target.value;if(ROWS)render()};
